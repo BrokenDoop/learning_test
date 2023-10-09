@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
-  "id": "examplemod",
+  "id": "doopsmod",
   "version": "${version}",
 
-  "name": "Example Mod",
-  "description": "This mod aims to help new BTA modders.",
+  "name": "Doops Mod",
+  "description": "I am Learning I am a GOD.",
   "authors": [
-    "Turnip Labs"
+    "Doop/Levi"
   ],
   "contact": {
     "homepage": "",
@@ -18,11 +18,11 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-        "turniplabs.examplemod.ExampleMod"
+			"brokendoop.doopmod.DoopMod"
     ]
   },
   "mixins": [
-      "examplemod.mixins.json"
+		"doopmod.mixins.json"
   ],
 
   "depends": {
