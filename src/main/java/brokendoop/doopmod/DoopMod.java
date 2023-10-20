@@ -1,5 +1,6 @@
 package brokendoop.doopmod;
 
+import brokendoop.doopmod.entity.ModEntities;
 import brokendoop.doopmod.item.ModItems;
 import net.fabricmc.api.ModInitializer;
 import org.slf4j.Logger;
@@ -31,5 +32,6 @@ public class DoopMod implements ModInitializer {
 		handleConfig();
 
 		ModItems.register();
+		ModEntities.register();
     }
 }
