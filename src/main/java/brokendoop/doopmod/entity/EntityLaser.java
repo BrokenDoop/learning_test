@@ -70,11 +70,11 @@ public class EntityLaser extends Entity {
 	}
 
 	protected void init() {
-		this.laserBounce = 0;
-		this.laserPierce = 3;
+		this.laserBounce = 5; //need to implement
+		this.laserPierce = 0; //need to implement
 		this.laserSpread = 1;
-		this.laserSpeed = 1F;
-		this.laserGravity = 0.03F;
+		this.laserSpeed = 1.2F;
+		this.laserGravity = 0F;
 		this.laserDamage = 2;
 		this.laserFireDamage = 3;
 		if (!(this.owner instanceof EntityPlayer)) {
@@ -136,7 +136,14 @@ public class EntityLaser extends Entity {
 		int i = this.world.getBlockId(this.xTile, this.yTile, this.zTile);
 		if (i > 0) {
 			this.world.playSoundAtEntity(this, "random.drr", 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
-			this.remove();
+			if (laserBounce > 0) {
+				this.xd = -this.xd;
+				this.yd = -this.yd;
+				this.zd = -this.zd;
+				laserBounce--;
+			} else {
+				this.remove();
+			}
 		} else {
 
 			++this.ticksInAir;
@@ -179,9 +186,14 @@ public class EntityLaser extends Entity {
 							entity.heartsFlashTime = 0;
 						}
 						movingObjectPosition.entity.hurt(this.owner, this.laserFireDamage, DamageType.FIRE);
-						this.world.playSoundAtEntity(this, "random.drr", 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
+						if (laserPierce > 0) {
+							//laser pierce sound goes here I think
+							laserPierce--;
+						} else {
 							this.remove();
+							this.world.playSoundAtEntity(this, "random.drr", 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
 						}
+					}
 				} else {
 					this.xTile = movingObjectPosition.x;
 					this.yTile = movingObjectPosition.y;
@@ -221,6 +233,9 @@ public class EntityLaser extends Entity {
 
 			while(this.yRot - this.yRotO >= 180.0F) {
 				this.yRotO += 360.0F;
+			}
+			if (this.ticksInAir == 400) {
+				this.remove();
 			}
 
 			this.xRot = this.xRotO + (this.xRot - this.xRotO) * 0.2F;

@@ -10,7 +10,7 @@ import net.minecraft.core.world.World;
 public class ItemRedstoneBlasterUncharged extends Item {
 	public ItemRedstoneBlasterUncharged(String name, int id) {
 		super(name, id);
-		this.setMaxDamage(584);
+		this.setMaxDamage(484);
 		this.maxStackSize = 1;
 	}
 
