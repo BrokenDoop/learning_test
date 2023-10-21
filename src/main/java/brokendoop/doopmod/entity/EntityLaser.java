@@ -73,14 +73,14 @@ public class EntityLaser extends Entity {
 		this.owner = entityliving;
 		this.setSize(0.5F, 0.5F);
 		this.moveTo(entityliving.x, entityliving.y + (double)entityliving.getHeadHeight(), entityliving.z, entityliving.yRot, entityliving.xRot);
-		this.x -= (double)(MathHelper.cos(this.yRot / 180.0F * 3.141593F) * 0.16F);
+		this.x -= MathHelper.cos(this.yRot / 180.0F * 3.141593F) * 0.16F;
 		this.y -= 0.1;
-		this.z -= (double)(MathHelper.sin(this.yRot / 180.0F * 3.141593F) * 0.16F);
+		this.z -= MathHelper.sin(this.yRot / 180.0F * 3.141593F) * 0.16F;
 		this.setPos(this.x, this.y, this.z);
 		this.heightOffset = 0.0F;
-		this.xd = (double)(-MathHelper.sin(this.yRot / 180.0F * 3.141593F) * MathHelper.cos(this.xRot / 180.0F * 3.141593F));
-		this.zd = (double)(MathHelper.cos(this.yRot / 180.0F * 3.141593F) * MathHelper.cos(this.xRot / 180.0F * 3.141593F));
-		this.yd = (double)(-MathHelper.sin(this.xRot / 180.0F * 3.141593F));
+		this.xd = -MathHelper.sin(this.yRot / 180.0F * 3.141593F) * MathHelper.cos(this.xRot / 180.0F * 3.141593F);
+		this.zd = MathHelper.cos(this.yRot / 180.0F * 3.141593F) * MathHelper.cos(this.xRot / 180.0F * 3.141593F);
+		this.yd = -MathHelper.sin(this.xRot / 180.0F * 3.141593F);
 		this.setLaserHeading(this.xd, this.yd, this.zd, 1.5F, 1.0F);
 	}
 
@@ -99,9 +99,9 @@ public class EntityLaser extends Entity {
 
 	public void setLaserHeading(double d, double d1, double d2, float f, float f1) {
 		float f2 = MathHelper.sqrt_double(d * d + d1 * d1 + d2 * d2);
-		d /= (double)f2;
-		d1 /= (double)f2;
-		d2 /= (double)f2;
+		d /= f2;
+		d1 /= f2;
+		d2 /= f2;
 		double i = 0.0075 * laserSpread;
 		d += this.random.nextGaussian() * i * (double)f1;
 		d1 += this.random.nextGaussian() * i * (double)f1;
@@ -115,7 +115,7 @@ public class EntityLaser extends Entity {
 		this.zd = d2;
 		float f3 = MathHelper.sqrt_double(d * d + d2 * d2);
 		this.yRotO = this.yRot = (float)(Math.atan2(d, d2) * 180.0 / Math.PI);
-		this.xRotO = this.xRot = (float)(Math.atan2(d1, (double)f3) * 180.0 / Math.PI);
+		this.xRotO = this.xRot = (float)(Math.atan2(d1, f3) * 180.0 / Math.PI);
 		this.ticksInAir = 0;
 	}
 
@@ -126,7 +126,7 @@ public class EntityLaser extends Entity {
 		if (this.xRotO == 0.0F && this.yRotO == 0.0F) {
 			float f = MathHelper.sqrt_double(xd * xd + zd * zd);
 			this.yRotO = this.yRot = (float)(Math.atan2(xd, zd) * 180.0 / Math.PI);
-			this.xRotO = this.xRot = (float)(Math.atan2(yd, (double)f) * 180.0 / Math.PI);
+			this.xRotO = this.xRot = (float)(Math.atan2(yd, f) * 180.0 / Math.PI);
 			this.xRotO = this.xRot;
 			this.yRotO = this.yRot;
 			this.moveTo(this.x, this.y, this.z, this.yRot, this.xRot);
@@ -139,7 +139,7 @@ public class EntityLaser extends Entity {
 		if (this.xRotO == 0.0F && this.yRotO == 0.0F) {
 			float f = MathHelper.sqrt_double(this.xd * this.xd + this.zd * this.zd);
 			this.yRotO = this.yRot = (float)(Math.atan2(this.xd, this.zd) * 180.0 / Math.PI);
-			this.xRotO = this.xRot = (float)(Math.atan2(this.yd, (double)f) * 180.0 / Math.PI);
+			this.xRotO = this.xRot = (float)(Math.atan2(this.yd, f) * 180.0 / Math.PI);
 		}
 
 		int i = this.world.getBlockId(this.xTile, this.yTile, this.zTile);
@@ -167,7 +167,7 @@ public class EntityLaser extends Entity {
 				Entity entity1 = (Entity)list.get(l);
 				if (entity1.isPickable() && (entity1 != this.owner || this.ticksInAir >= 5)) {
 					f5 = 0.3F;
-					AABB axisalignedbb1 = entity1.bb.expand((double)f5, (double)f5, (double)f5);
+					AABB axisalignedbb1 = entity1.bb.expand(f5, f5, f5);
 					HitResult movingobjectposition1 = axisalignedbb1.func_1169_a(oldPos, newPos);
 					if (movingobjectposition1 != null) {
 						double d1 = oldPos.distanceTo(movingobjectposition1.location);
@@ -198,9 +198,9 @@ public class EntityLaser extends Entity {
 					this.xTile = movingobjectposition.x;
 					this.yTile = movingobjectposition.y;
 					this.zTile = movingobjectposition.z;
-					this.xd = (double)((float)(movingobjectposition.location.xCoord - this.x));
-					this.yd = (double)((float)(movingobjectposition.location.yCoord - this.y));
-					this.zd = (double)((float)(movingobjectposition.location.zCoord - this.z));
+					this.xd = (float)(movingobjectposition.location.xCoord - this.x);
+					this.yd = (float)(movingobjectposition.location.yCoord - this.y);
+					this.zd = (float)(movingobjectposition.location.zCoord - this.z);
 					f1 = MathHelper.sqrt_double(this.xd * this.xd + this.yd * this.yd + this.zd * this.zd);
 					this.x -= this.xd / (double)f1 * 0.05;
 					this.y -= this.yd / (double)f1 * 0.05;
@@ -214,7 +214,7 @@ public class EntityLaser extends Entity {
 			f1 = MathHelper.sqrt_double(this.xd * this.xd + this.zd * this.zd);
 			this.yRot = (float)(Math.atan2(this.xd, this.zd) * 180.0 / Math.PI);
 
-			for(this.xRot = (float)(Math.atan2(this.yd, (double)f1) * 180.0 / Math.PI); this.xRot - this.xRotO < -180.0F; this.xRotO -= 360.0F) {
+			for(this.xRot = (float)(Math.atan2(this.yd, f1) * 180.0 / Math.PI); this.xRot - this.xRotO < -180.0F; this.xRotO -= 360.0F) {
 			}
 
 			while(this.xRot - this.xRotO >= 180.0F) {
@@ -240,7 +240,7 @@ public class EntityLaser extends Entity {
 				}
 			}
 
-			this.yd -= (double)f5;
+			this.yd -= f5;
 			this.setPos(this.x, this.y, this.z);
 		}
 	}
