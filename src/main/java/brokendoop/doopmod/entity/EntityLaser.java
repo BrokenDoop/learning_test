@@ -253,26 +253,26 @@ public class EntityLaser extends Entity {
 	}
 	private void calculateBounces(){
 		collisionDelay--;
-		if (xTile == xTileOld && yTile == yTileOld && zTile == zTileOld){return;}
-		if (world.getBlockId(this.xTile, this.yTile, this.zTile) == 0) {return;}
-		if (hitResult == null) {return;}
-		if (collisionDelay >= 0) {return;}
-		collisionDelay = 1;
+		if (xTile == xTileOld && yTile == yTileOld && zTile == zTileOld){return;} // Don't bounce if block hit is the same as the previous block
+		if (world.getBlockId(this.xTile, this.yTile, this.zTile) == 0) {return;} // Don't bounce if hitting air
+		if (hitResult == null) {return;} // Don't bounce if ray-cast result is null
+		if (collisionDelay >= 0) {return;} // Don't bounce if withing collision cool-down
+		collisionDelay = 1; // Set collision delay to 1 tick
 		Side sideHit = hitResult.side;
 		double deltaX = xd;
 		double deltaY = yd;
 		double deltaZ = zd;
-		if (sideHit == Side.EAST || sideHit == Side.WEST){
+		if (sideHit == Side.EAST || sideHit == Side.WEST){ // Invert x velocity if hitting an yz-plane
 			deltaX *= -1;
 		}
-		if (sideHit == Side.TOP || sideHit == Side.BOTTOM){
+		if (sideHit == Side.TOP || sideHit == Side.BOTTOM){ // Invert y velocity if hitting an xz-plane
 			deltaY *= -1;
 		}
-		if (sideHit == Side.NORTH || sideHit == Side.SOUTH){
+		if (sideHit == Side.NORTH || sideHit == Side.SOUTH){ // Invert z velocity if hitting an xy-plane
 			deltaZ *= -1;
 		}
 		this.world.playSoundAtEntity(this, "random.drr", 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
-		if (laserBounce > 0) {
+		if (laserBounce > 0) { // If bounces available
 			setLaserHeading(deltaX, deltaY, deltaZ, 1.5f, 1f);
 			laserBounce--;
 		} else {
