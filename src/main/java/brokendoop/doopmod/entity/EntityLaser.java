@@ -8,6 +8,7 @@ import net.minecraft.core.entity.EntityLiving;
 import net.minecraft.core.entity.player.EntityPlayer;
 import net.minecraft.core.util.helper.DamageType;
 import net.minecraft.core.util.helper.MathHelper;
+import net.minecraft.core.util.helper.Side;
 import net.minecraft.core.util.phys.AABB;
 import net.minecraft.core.util.phys.Vec3d;
 import net.minecraft.core.world.World;
@@ -15,10 +16,14 @@ import net.minecraft.core.world.World;
 import java.util.List;
 
 public class EntityLaser extends Entity {
-//your shits all fucked, fix it, need to fix this entirely.
+	//your shits all fucked, fix it, need to fix this entirely.
 	protected int xTile;
 	protected int yTile;
 	protected int zTile;
+	protected int xTileOld;
+	protected int yTileOld;
+	protected int zTileOld;
+	protected HitResult hitResult;
 	public boolean doesLaserBelongToPlayer;
 	public EntityLiving owner;
 	protected int ticksInAir;
@@ -30,6 +35,7 @@ public class EntityLaser extends Entity {
 	protected int laserDamage;
 	protected int laserFireDamage;
 	protected int laserType;
+	protected int collisionDelay = 0;
 	public EntityLaser(World world) {
 		this(world, 0);
 	}
@@ -43,6 +49,9 @@ public class EntityLaser extends Entity {
 		this.xTile = -1;
 		this.yTile = -1;
 		this.zTile = -1;
+		xTileOld = xTile;
+		yTileOld = yTile;
+		zTileOld = zTile;
 		this.doesLaserBelongToPlayer = false;
 		this.laserType = laserType;
 		this.ticksInAir = 0;
@@ -74,7 +83,7 @@ public class EntityLaser extends Entity {
 		this.laserPierce = 0; //need to implement
 		this.laserSpread = 1;
 		this.laserSpeed = 1.2F;
-		this.laserGravity = 0F;
+		this.laserGravity = 0.03F;
 		this.laserDamage = 2;
 		this.laserFireDamage = 3;
 		if (!(this.owner instanceof EntityPlayer)) {
@@ -124,131 +133,150 @@ public class EntityLaser extends Entity {
 		}
 
 	}
-
 	public void tick() {
+		xTileOld = xTile;
+		yTileOld = yTile;
+		zTileOld = zTile;
 		super.tick();
 		if (this.xRotO == 0.0F && this.yRotO == 0.0F) {
 			float f = MathHelper.sqrt_double(this.xd * this.xd + this.zd * this.zd);
 			this.yRotO = this.yRot = (float)Math.toDegrees(Math.atan2(this.xd, this.zd));
 			this.xRotO = this.xRot = (float)Math.toDegrees(Math.atan2(this.yd, f));
 		}
+		++this.ticksInAir;
+		Vec3d oldPos = Vec3d.createVector(this.x, this.y, this.z);
+		Vec3d newPos = Vec3d.createVector(this.x + this.xd, this.y + this.yd, this.z + this.zd);
+		hitResult = this.world.checkBlockCollisionBetweenPoints(oldPos, newPos, false, true);
+		oldPos = Vec3d.createVector(this.x, this.y, this.z);
+		newPos = Vec3d.createVector(this.x + this.xd, this.y + this.yd, this.z + this.zd);
+		if (hitResult != null) {
+			newPos = Vec3d.createVector(hitResult.location.xCoord, hitResult.location.yCoord, hitResult.location.zCoord);
+		}
 
-		int i = this.world.getBlockId(this.xTile, this.yTile, this.zTile);
-		if (i > 0) {
-			this.world.playSoundAtEntity(this, "random.drr", 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
-			if (laserBounce > 0) {
-				this.xd = -this.xd;
-				this.yd = -this.yd;
-				this.zd = -this.zd;
-				laserBounce--;
+		Entity entity = null;
+		List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, this.bb.addCoord(this.xd, this.yd, this.zd).expand(1.0, 1.0, 1.0));
+		double closestEntity = 0.0;
+
+		for (Entity listEntity : list) {
+			if (listEntity.isPickable() && (listEntity != this.owner || this.ticksInAir >= 5)) {
+				float expansionAmount = 0.3F;
+				AABB axisAlignedBB1 = listEntity.bb.expand(expansionAmount, expansionAmount, expansionAmount);
+				HitResult movingObjectPosition1 = axisAlignedBB1.func_1169_a(oldPos, newPos);
+				if (movingObjectPosition1 != null) {
+					double distanceToEntity = oldPos.distanceTo(movingObjectPosition1.location);
+					if (distanceToEntity < closestEntity || closestEntity == 0.0) {
+						entity = listEntity;
+						closestEntity = distanceToEntity;
+					}
+				}
+			}
+		}
+
+		if (entity != null) {
+			hitResult = new HitResult(entity);
+		}
+
+		if (hitResult != null) {
+			if (hitResult.entity != null) {
+				if (hitResult.entity.hurt(this.owner, this.laserDamage, DamageType.COMBAT)) {
+					if (entity instanceof EntityLiving) {
+						entity.heartsFlashTime = 0;
+					}
+					hitResult.entity.hurt(this.owner, this.laserFireDamage, DamageType.FIRE);
+					if (laserPierce > 0) {
+						//laser pierce sound goes here I think
+						laserPierce--;
+					} else {
+						this.remove();
+						this.world.playSoundAtEntity(this, "random.drr", 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
+					}
+				}
 			} else {
-				this.remove();
+				this.xTile = hitResult.x;
+				this.yTile = hitResult.y;
+				this.zTile = hitResult.z;
+
+				// Slows down arrow on collision
+				/*this.xd = (float)(movingObjectPosition.location.xCoord - this.x);
+				this.yd = (float)(movingObjectPosition.location.yCoord - this.y);
+				this.zd = (float)(movingObjectPosition.location.zCoord - this.z);*/
+
+				float speed = MathHelper.sqrt_double(this.xd * this.xd + this.yd * this.yd + this.zd * this.zd);
+				this.x -= this.xd / (double)speed * 0.05;
+				this.y -= this.yd / (double)speed * 0.05;
+				this.z -= this.zd / (double)speed * 0.05;
 			}
+		}
+
+		this.x += this.xd;
+		this.y += this.yd;
+		this.z += this.zd;
+
+		this.yRot = (float)(Math.atan2(this.xd, this.zd) * 180.0 / Math.PI);
+
+		// This actually rotates the laser apparently
+		float horizontalSpeed = MathHelper.sqrt_double(this.xd * this.xd + this.zd * this.zd);
+		this.xRot = (float) Math.toDegrees(Math.atan2(this.yd, horizontalSpeed));
+
+		// Keeps rotation bounded to (-180, 180]
+		while (this.xRot - this.xRotO < -180.0F) {
+			this.xRotO -= 360.0F;
+		}
+
+		while(this.xRot - this.xRotO >= 180.0F) {
+			this.xRotO += 360.0F;
+		}
+
+		while(this.yRot - this.yRotO < -180.0F) {
+			this.yRotO -= 360.0F;
+		}
+
+		while(this.yRot - this.yRotO >= 180.0F) {
+			this.yRotO += 360.0F;
+		}
+		if (this.ticksInAir == 400) {
+			this.remove();
+		}
+
+		this.xRot = this.xRotO + (this.xRot - this.xRotO) * 0.2F;
+		this.yRot = this.yRotO + (this.yRot - this.yRotO) * 0.2F;
+		if (this.isInWater()) {
+			for(int i1 = 0; i1 < 4; ++i1) {
+				float f6 = 0.25F;
+				this.world.spawnParticle("bubble", this.x - this.xd * (double)f6, this.y - this.yd * (double)f6, this.z - this.zd * (double)f6, this.xd, this.yd, this.zd);
+			}
+		}
+		calculateBounces();
+		this.yd -= this.laserGravity;
+		this.setPos(this.x, this.y, this.z);
+
+	}
+	private void calculateBounces(){
+		collisionDelay--;
+		if (xTile == xTileOld && yTile == yTileOld && zTile == zTileOld){return;} // Don't bounce if block hit is the same as the previous block
+		if (world.getBlockId(this.xTile, this.yTile, this.zTile) == 0) {return;} // Don't bounce if hitting air
+		if (hitResult == null) {return;} // Don't bounce if ray-cast result is null
+		if (collisionDelay >= 0) {return;} // Don't bounce if withing collision cool-down
+		collisionDelay = 1; // Set collision delay to 1 tick
+		Side sideHit = hitResult.side;
+		double deltaX = xd;
+		double deltaY = yd;
+		double deltaZ = zd;
+		if (sideHit == Side.EAST || sideHit == Side.WEST){ // Invert x velocity if hitting an yz-plane
+			deltaX *= -1;
+		}
+		if (sideHit == Side.TOP || sideHit == Side.BOTTOM){ // Invert y velocity if hitting an xz-plane
+			deltaY *= -1;
+		}
+		if (sideHit == Side.NORTH || sideHit == Side.SOUTH){ // Invert z velocity if hitting an xy-plane
+			deltaZ *= -1;
+		}
+		this.world.playSoundAtEntity(this, "random.drr", 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
+		if (laserBounce > 0) { // If bounces available
+			setLaserHeading(deltaX, deltaY, deltaZ, 1.5f, 1f);
+			laserBounce--;
 		} else {
-
-			++this.ticksInAir;
-			Vec3d oldPos = Vec3d.createVector(this.x, this.y, this.z);
-			Vec3d newPos = Vec3d.createVector(this.x + this.xd, this.y + this.yd, this.z + this.zd);
-			HitResult movingObjectPosition = this.world.checkBlockCollisionBetweenPoints(oldPos, newPos, false, true);
-			oldPos = Vec3d.createVector(this.x, this.y, this.z);
-			newPos = Vec3d.createVector(this.x + this.xd, this.y + this.yd, this.z + this.zd);
-			if (movingObjectPosition != null) {
-				newPos = Vec3d.createVector(movingObjectPosition.location.xCoord, movingObjectPosition.location.yCoord, movingObjectPosition.location.zCoord);
-			}
-
-			Entity entity = null;
-			List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, this.bb.addCoord(this.xd, this.yd, this.zd).expand(1.0, 1.0, 1.0));
-			double closestEntity = 0.0;
-
-			for (Entity listEntity : list) {
-				if (listEntity.isPickable() && (listEntity != this.owner || this.ticksInAir >= 5)) {
-					float expansionAmount = 0.3F;
-					AABB axisAlignedBB1 = listEntity.bb.expand(expansionAmount, expansionAmount, expansionAmount);
-					HitResult movingObjectPosition1 = axisAlignedBB1.func_1169_a(oldPos, newPos);
-					if (movingObjectPosition1 != null) {
-						double distanceToEntity = oldPos.distanceTo(movingObjectPosition1.location);
-						if (distanceToEntity < closestEntity || closestEntity == 0.0) {
-							entity = listEntity;
-							closestEntity = distanceToEntity;
-						}
-					}
-				}
-			}
-
-			if (entity != null) {
-				movingObjectPosition = new HitResult(entity);
-			}
-
-			if (movingObjectPosition != null) {
-				if (movingObjectPosition.entity != null) {
-					if (movingObjectPosition.entity.hurt(this.owner, this.laserDamage, DamageType.COMBAT)) {
-						if (entity instanceof EntityLiving) {
-							entity.heartsFlashTime = 0;
-						}
-						movingObjectPosition.entity.hurt(this.owner, this.laserFireDamage, DamageType.FIRE);
-						if (laserPierce > 0) {
-							//laser pierce sound goes here I think
-							laserPierce--;
-						} else {
-							this.remove();
-							this.world.playSoundAtEntity(this, "random.drr", 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
-						}
-					}
-				} else {
-					this.xTile = movingObjectPosition.x;
-					this.yTile = movingObjectPosition.y;
-					this.zTile = movingObjectPosition.z;
-					this.xd = (float)(movingObjectPosition.location.xCoord - this.x);
-					this.yd = (float)(movingObjectPosition.location.yCoord - this.y);
-					this.zd = (float)(movingObjectPosition.location.zCoord - this.z);
-					float speed = MathHelper.sqrt_double(this.xd * this.xd + this.yd * this.yd + this.zd * this.zd);
-					this.x -= this.xd / (double)speed * 0.05;
-					this.y -= this.yd / (double)speed * 0.05;
-					this.z -= this.zd / (double)speed * 0.05;
-				}
-			}
-
-			this.x += this.xd;
-			this.y += this.yd;
-			this.z += this.zd;
-
-			this.yRot = (float)(Math.atan2(this.xd, this.zd) * 180.0 / Math.PI);
-
-			// This actually rotates the laser apparently
-			float horizontalSpeed = MathHelper.sqrt_double(this.xd * this.xd + this.zd * this.zd);
-			this.xRot = (float) Math.toDegrees(Math.atan2(this.yd, horizontalSpeed));
-
-			// Keeps rotation bounded to (-180, 180]
-			while (this.xRot - this.xRotO < -180.0F) {
-				this.xRotO -= 360.0F;
-			}
-
-			while(this.xRot - this.xRotO >= 180.0F) {
-				this.xRotO += 360.0F;
-			}
-
-			while(this.yRot - this.yRotO < -180.0F) {
-				this.yRotO -= 360.0F;
-			}
-
-			while(this.yRot - this.yRotO >= 180.0F) {
-				this.yRotO += 360.0F;
-			}
-			if (this.ticksInAir == 400) {
-				this.remove();
-			}
-
-			this.xRot = this.xRotO + (this.xRot - this.xRotO) * 0.2F;
-			this.yRot = this.yRotO + (this.yRot - this.yRotO) * 0.2F;
-			if (this.isInWater()) {
-				for(int i1 = 0; i1 < 4; ++i1) {
-					float f6 = 0.25F;
-					this.world.spawnParticle("bubble", this.x - this.xd * (double)f6, this.y - this.yd * (double)f6, this.z - this.zd * (double)f6, this.xd, this.yd, this.zd);
-				}
-			}
-
-			this.yd -= this.laserGravity;
-			this.setPos(this.x, this.y, this.z);
+			this.remove();
 		}
 	}
 
@@ -274,7 +302,4 @@ public class EntityLaser extends Entity {
 	public float getShadowHeightOffs() {
 		return 0.0F;
 	}
-
-
-
 }
