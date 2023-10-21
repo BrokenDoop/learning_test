@@ -43,6 +43,7 @@ public class EntityLaser extends Entity {
 		this.doesLaserBelongToPlayer = false;
 		this.laserType = laserType;
 		this.ticksInAir = 0;
+		this.fireImmune = true;
 		this.setSize(0.5F, 0.5F);
 	}
 
@@ -54,6 +55,7 @@ public class EntityLaser extends Entity {
 		this.doesLaserBelongToPlayer = false;
 		this.laserType = laserType;
 		this.ticksInAir = 0;
+		this.fireImmune = true;
 		this.setSize(0.5F, 0.5F);
 		this.setPos(d, d1, d2);
 		this.heightOffset = 0.0F;
@@ -67,6 +69,7 @@ public class EntityLaser extends Entity {
 		this.doesLaserBelongToPlayer = doesLaserBelongToPlayer;
 		this.laserType = laserType;
 		this.ticksInAir = 0;
+		this.fireImmune = true;
 		this.owner = entityliving;
 		this.setSize(0.5F, 0.5F);
 		this.moveTo(entityliving.x, entityliving.y + (double)entityliving.getHeadHeight(), entityliving.z, entityliving.yRot, entityliving.xRot);
@@ -85,8 +88,8 @@ public class EntityLaser extends Entity {
 		this.laserBounce = 0;
 		this.laserPierce = 3;
 		this.laserSpread = 1;
-		this.laserSpeed = 0.5F;
-		this.laserGravity = 0F;
+		this.laserSpeed = 1F;
+		this.laserGravity = 0.03F;
 		this.laserDamage = 2;
 		this.laserFireDamage = 3;
 		if (!(this.owner instanceof EntityPlayer)) {
@@ -184,6 +187,10 @@ public class EntityLaser extends Entity {
 			if (movingobjectposition != null) {
 				if (movingobjectposition.entity != null) {
 					if (movingobjectposition.entity.hurt(this.owner, this.laserDamage, DamageType.COMBAT)) {
+						if (entity instanceof EntityLiving) {
+							entity.heartsFlashTime = 0;
+						}
+						movingobjectposition.entity.hurt(this.owner, this.laserFireDamage, DamageType.FIRE);
 						this.world.playSoundAtEntity(this, "random.drr", 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
 							this.remove();
 						}
