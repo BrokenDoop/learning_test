@@ -3,7 +3,6 @@ package brokendoop.doopmod.entity.renderer;
 import brokendoop.doopmod.entity.EntityLaser;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.entity.EntityRenderer;
-import net.minecraft.core.entity.monster.EntitySpider;
 import org.lwjgl.opengl.GL11;
 
 public class LaserRenderer extends EntityRenderer<EntityLaser> {
@@ -46,10 +45,10 @@ public class LaserRenderer extends EntityRenderer<EntityLaser> {
 				GL11.glRotatef(90.0F, 1.0F, 0.0F, 0.0F);
 				GL11.glNormal3f(0.0F, 0.0F, scale);
 				tessellator.startDrawingQuads();
-				tessellator.addVertexWithUV(-6.5, -0.6, 0.0, (double)bodyMinU, (double)bodyMinV);
-				tessellator.addVertexWithUV(6.5, -0.6, 0.0, (double)bodyMaxU, (double)bodyMinV);
-				tessellator.addVertexWithUV(6.5, 0.6, 0.0, (double)bodyMaxU, (double)bodyMaxV);
-				tessellator.addVertexWithUV(-6.5, 0.6, 0.0, (double)bodyMinU, (double)bodyMaxV);
+				tessellator.addVertexWithUV(-6.5, -0.6, 0.0, bodyMinU, bodyMinV);
+				tessellator.addVertexWithUV(6.5, -0.6, 0.0, bodyMaxU, bodyMinV);
+				tessellator.addVertexWithUV(6.5, 0.6, 0.0, bodyMaxU, bodyMaxV);
+				tessellator.addVertexWithUV(-6.5, 0.6, 0.0, bodyMinU, bodyMaxV);
 				tessellator.draw();
 			}
 
