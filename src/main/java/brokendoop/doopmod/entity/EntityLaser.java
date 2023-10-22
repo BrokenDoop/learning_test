@@ -241,7 +241,7 @@ public class EntityLaser extends Entity {
 		this.yRot = this.yRotO + (this.yRot - this.yRotO) * 0.2F;
 
 		if (laserType == 0){
-			this.world.spawnParticle("reddust", this.x, this.y, this.z, 0.9, 0 , 0);
+			this.world.spawnParticle("laserdust", this.x, this.y, this.z, 0.9, 0 , 0);
 		}
 
 		if (this.isInWater()) {
