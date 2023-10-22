@@ -39,7 +39,20 @@ public class EntityLaserdustFX extends EntityFX {
 		}
 
 		this.particleScale = this.field_673_a * f6;
-		super.renderParticle(t, renderPartialTicks, rotationX, rotationXZ, rotationZ, rotationYZ, rotationXY);
+		float texMinU = (float)(this.particleTextureIndex % 16) / 16.0f;
+		float texMaxU = texMinU + 0.0624375f;
+		float texMinV = (float)(this.particleTextureIndex / 16) / 16.0f;
+		float texMaxV = texMinV + 0.0624375f;
+		float scale = 0.1f * this.particleScale;
+		float posX = (float)(this.xo + (this.x - this.xo) * (double)renderPartialTicks - lerpPosX);
+		float posY = (float)(this.yo + (this.y - this.yo) * (double)renderPartialTicks - lerpPosY);
+		float posZ = (float)(this.zo + (this.z - this.zo) * (double)renderPartialTicks - lerpPosZ);
+		float brightness = 1f;
+		t.setColorOpaque_F(this.particleRed * brightness, this.particleGreen * brightness, this.particleBlue * brightness);
+		t.addVertexWithUV(posX - rotationX * scale - rotationYZ * scale, posY - rotationXZ * scale, posZ - rotationZ * scale - rotationXY * scale, texMaxU, texMaxV);
+		t.addVertexWithUV(posX - rotationX * scale + rotationYZ * scale, posY + rotationXZ * scale, posZ - rotationZ * scale + rotationXY * scale, texMaxU, texMinV);
+		t.addVertexWithUV(posX + rotationX * scale + rotationYZ * scale, posY + rotationXZ * scale, posZ + rotationZ * scale + rotationXY * scale, texMinU, texMinV);
+		t.addVertexWithUV(posX + rotationX * scale - rotationYZ * scale, posY - rotationXZ * scale, posZ + rotationZ * scale - rotationXY * scale, texMinU, texMaxV);
 	}
 
 	public void tick() {
