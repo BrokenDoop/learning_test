@@ -27,7 +27,7 @@ public class EntityLaserPink extends EntityLaser{
 	}
 	public void tick(){
 		super.tick();
-		this.world.spawnParticle("reddust", this.x, this.y, this.z, 1, 0.75 , 0.75);
+		this.world.spawnParticle("laserdust", this.x, this.y, this.z, 1, 0.75 , 0.75);
 	}
 }
 
