@@ -7,6 +7,6 @@ import turniplabs.halplibe.helper.EntityHelper;
 public class ModEntities {
 
 	public static void register() {
-		EntityHelper.createEntity(EntityLaser.class, new LaserRenderer() , 200, "laser");
+		EntityHelper.createEntity(EntityLaser.class, new LaserRenderer() , 205, "laser");
 	}
 }

@@ -35,7 +35,6 @@ public class EntityLaser extends Entity {
 	protected int laserDamage;
 	protected int laserFireDamage;
 	protected int laserType;
-	protected int collisionDelay = 0;
 	public EntityLaser(World world) {
 		this(world, 0);
 	}
@@ -79,13 +78,13 @@ public class EntityLaser extends Entity {
 	}
 
 	protected void init() {
-		this.laserBounce = 5; //need to implement
-		this.laserPierce = 0; //need to implement
-		this.laserSpread = 1;
+		this.laserBounce = 0;
+		this.laserPierce = 3;
+		this.laserSpread = 3;
 		this.laserSpeed = 1.2F;
-		this.laserGravity = 0.03F;
-		this.laserDamage = 2;
-		this.laserFireDamage = 3;
+		this.laserGravity = 0F;
+		this.laserDamage = 3;
+		this.laserFireDamage = 4;
 		if (!(this.owner instanceof EntityPlayer)) {
 			this.doesLaserBelongToPlayer = false;
 		}
@@ -240,6 +239,11 @@ public class EntityLaser extends Entity {
 
 		this.xRot = this.xRotO + (this.xRot - this.xRotO) * 0.2F;
 		this.yRot = this.yRotO + (this.yRot - this.yRotO) * 0.2F;
+
+		if (laserType == 0){
+			this.world.spawnParticle("reddust", this.x, this.y, this.z, 0.9, 0 , 0);
+		}
+
 		if (this.isInWater()) {
 			for(int i1 = 0; i1 < 4; ++i1) {
 				float f6 = 0.25F;
@@ -251,26 +255,67 @@ public class EntityLaser extends Entity {
 		this.setPos(this.x, this.y, this.z);
 
 	}
+	//This voodoo witchcraft shit is essentially me pouring chemical X onto useless's code
 	private void calculateBounces(){
-		collisionDelay--;
-		if (xTile == xTileOld && yTile == yTileOld && zTile == zTileOld){return;} // Don't bounce if block hit is the same as the previous block
-		if (world.getBlockId(this.xTile, this.yTile, this.zTile) == 0) {return;} // Don't bounce if hitting air
-		if (hitResult == null) {return;} // Don't bounce if ray-cast result is null
-		if (collisionDelay >= 0) {return;} // Don't bounce if withing collision cool-down
-		collisionDelay = 1; // Set collision delay to 1 tick
+		if (xTile == xTileOld && yTile == yTileOld && zTile == zTileOld) return; // Don't bounce if block hit is the same as the previous block
+		if (world.getBlockId(this.xTile, this.yTile, this.zTile) == 0) return; // Don't bounce if hitting air
+		if (hitResult == null) return; // Don't bounce if ray-cast result is null
 		Side sideHit = hitResult.side;
+
+		// Calculate the exact position of the collision point
+		double hitX = hitResult.location.xCoord;
+		double hitY = hitResult.location.yCoord;
+		double hitZ = hitResult.location.zCoord;
+
+
+		double relX = hitX - xTile;
+		double relY = hitY - yTile;
+		double relZ = hitZ - zTile;
+
+
 		double deltaX = xd;
 		double deltaY = yd;
 		double deltaZ = zd;
-		if (sideHit == Side.EAST || sideHit == Side.WEST){ // Invert x velocity if hitting an yz-plane
-			deltaX *= -1;
+
+
+		double normalX = 0.0;
+		double normalY = 0.0;
+		double normalZ = 0.0;
+
+		switch (sideHit) {
+			case EAST:
+				normalX = -1.0;
+				break;
+			case WEST:
+				normalX = 1.0;
+				break;
+			case TOP:
+				normalY = -1.0;
+				break;
+			case BOTTOM:
+				normalY = 1.0;
+				break;
+			case NORTH:
+				normalZ = 1.0;
+				break;
+			case SOUTH:
+				normalZ = -1.0;
+				break;
 		}
-		if (sideHit == Side.TOP || sideHit == Side.BOTTOM){ // Invert y velocity if hitting an xz-plane
-			deltaY *= -1;
-		}
-		if (sideHit == Side.NORTH || sideHit == Side.SOUTH){ // Invert z velocity if hitting an xy-plane
-			deltaZ *= -1;
-		}
+
+		double dotProduct = deltaX * normalX + deltaY * normalY + deltaZ * normalZ;
+
+
+		deltaX -= 2 * dotProduct * normalX;
+		deltaY -= 2 * dotProduct * normalY;
+		deltaZ -= 2 * dotProduct * normalZ;
+
+
+		this.x = xTile + relX + deltaX * 0.05;
+		this.y = yTile + relY + deltaY * 0.05;
+		this.z = zTile + relZ + deltaZ * 0.05;
+
+		//play stupid sound
 		this.world.playSoundAtEntity(this, "random.drr", 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
 		if (laserBounce > 0) { // If bounces available
 			setLaserHeading(deltaX, deltaY, deltaZ, 1.5f, 1f);

@@ -22,7 +22,17 @@ public class LaserRenderer extends EntityRenderer<EntityLaser> {
 			GL11.glRotatef(Laser.xRotO + (Laser.xRot - Laser.xRotO) * renderPartialTicks, 0.0F, 0.0F, 1.0F);
 			Tessellator tessellator = Tessellator.instance;
 			byte laserType;
-			if (Laser.getLaserType() == 2) {
+			if (Laser.getLaserType() == 7) {
+				laserType = 7;
+			} else if (Laser.getLaserType() == 6) {
+				laserType = 6;
+			} else if (Laser.getLaserType() == 5) {
+				laserType = 5;
+			} else if (Laser.getLaserType() == 4) {
+				laserType = 4;
+			} else if (Laser.getLaserType() == 3) {
+				laserType = 3;
+			} else if (Laser.getLaserType() == 2) {
 				laserType = 2;
 			} else if (Laser.getLaserType() == 1) {
 				laserType = 1;
