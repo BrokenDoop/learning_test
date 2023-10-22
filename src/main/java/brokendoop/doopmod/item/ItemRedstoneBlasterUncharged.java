@@ -1,6 +1,6 @@
 package brokendoop.doopmod.item;
 
-import brokendoop.doopmod.entity.*;
+import brokendoop.doopmod.entity.projectile.*;
 import net.minecraft.core.entity.player.EntityPlayer;
 import net.minecraft.core.item.Item;
 import net.minecraft.core.item.ItemStack;
@@ -48,7 +48,14 @@ public class ItemRedstoneBlasterUncharged extends Item {
 			if (!world.isClientSide) {
 				world.entityJoinedWorld(new EntityLaserBlack(world, entityplayer, true));
 			}
+		} else if (entityplayer.inventory.consumeInventoryItem(Item.nethercoal.id)) {
+			itemstack.damageItem(1, entityplayer);
+			world.playSoundAtEntity(entityplayer, "random.bow", 0.3F, 1.0F / (itemRand.nextFloat() * 0.4F + 0.8F));
+			if (!world.isClientSide) {
+				world.entityJoinedWorld(new EntityLaserOrange(world, entityplayer, true));
+			}
 		}
+
 
 		return itemstack;
 	}

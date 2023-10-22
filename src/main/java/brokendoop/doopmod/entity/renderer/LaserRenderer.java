@@ -1,6 +1,6 @@
 package brokendoop.doopmod.entity.renderer;
 
-import brokendoop.doopmod.entity.EntityLaser;
+import brokendoop.doopmod.entity.projectile.EntityLaser;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.entity.EntityRenderer;
 import org.lwjgl.opengl.GL11;

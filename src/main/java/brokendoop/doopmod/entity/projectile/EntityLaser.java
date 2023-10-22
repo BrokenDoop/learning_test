@@ -1,4 +1,4 @@
-package brokendoop.doopmod.entity;
+package brokendoop.doopmod.entity.projectile;
 
 
 import com.mojang.nbt.CompoundTag;
@@ -194,11 +194,6 @@ public class EntityLaser extends Entity {
 				this.xTile = hitResult.x;
 				this.yTile = hitResult.y;
 				this.zTile = hitResult.z;
-
-				// Slows down arrow on collision
-				/*this.xd = (float)(movingObjectPosition.location.xCoord - this.x);
-				this.yd = (float)(movingObjectPosition.location.yCoord - this.y);
-				this.zd = (float)(movingObjectPosition.location.zCoord - this.z);*/
 
 				float speed = MathHelper.sqrt_double(this.xd * this.xd + this.yd * this.yd + this.zd * this.zd);
 				this.x -= this.xd / (double)speed * 0.05;

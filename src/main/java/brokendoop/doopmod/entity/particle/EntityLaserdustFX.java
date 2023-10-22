@@ -1,4 +1,4 @@
-package brokendoop.doopmod.entity;
+package brokendoop.doopmod.entity.particle;
 
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.core.entity.fx.EntityFX;

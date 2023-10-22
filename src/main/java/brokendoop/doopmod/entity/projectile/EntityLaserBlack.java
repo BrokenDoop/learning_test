@@ -1,4 +1,4 @@
-package brokendoop.doopmod.entity;
+package brokendoop.doopmod.entity.projectile;
 
 import net.minecraft.core.entity.EntityLiving;
 import net.minecraft.core.world.World;
