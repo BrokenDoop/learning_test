@@ -1,6 +1,10 @@
 package brokendoop.doopmod.entity.projectile;
 
+import net.minecraft.core.HitResult;
+import net.minecraft.core.block.Block;
+import net.minecraft.core.block.material.Material;
 import net.minecraft.core.entity.EntityLiving;
+import net.minecraft.core.util.phys.Vec3d;
 import net.minecraft.core.world.World;
 
 public class EntityLaserOrange extends EntityLaser{
@@ -26,12 +30,24 @@ public class EntityLaserOrange extends EntityLaser{
 		this.laserFireDamage = 3;
 	}
 	public void tick(){
+		// Check for water collision
+		Vec3d oldPos = Vec3d.createVector(this.x, this.y, this.z);
+		Vec3d newPos = Vec3d.createVector(this.x + this.xd, this.y + this.yd, this.z + this.zd);
+		HitResult waterHit = this.world.checkBlockCollisionBetweenPoints(oldPos, newPos, true, false);
+		if (waterHit != null && waterHit.hitType == HitResult.HitType.TILE){
+			Block block = world.getBlock(waterHit.x, waterHit.y, waterHit.z);
+			if (block.blockMaterial == Material.water) {
+				this.remove();
+				this.world.playSoundAtEntity(this, "random.fizz", 1F, 2.6F + (random.nextFloat() - random.nextFloat()) * 0.8F);
+				return;
+			}
+		}
+
+		// Normal Laser tick
 		super.tick();
 		this.world.spawnParticle("laserdust", this.x, this.y, this.z, 0.9, 0.5 , 0.1);
-		if (this.isInWater()) {
-			this.remove();
-			this.world.playSoundAtEntity(this, "random.fizz", 1F, 2.6F + (random.nextFloat() - random.nextFloat()) * 0.8F);
-		}
+
+		// Burn Entity on hit
 		if (hitResult != null) {
 			if (hitResult.entity != null) {
 				hitResult.entity.fireHurt();
