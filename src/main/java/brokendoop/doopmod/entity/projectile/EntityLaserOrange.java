@@ -27,7 +27,7 @@ public class EntityLaserOrange extends EntityLaser{
 		this.laserSpeed = 1.2F;
 		this.laserGravity = 0F;
 		this.laserDamage = 0;
-		this.laserFireDamage = 3;
+		this.laserFireDamage = 4;
 	}
 	public void tick(){
 		// Check for water collision
@@ -39,6 +39,7 @@ public class EntityLaserOrange extends EntityLaser{
 			if (block.blockMaterial == Material.water) {
 				this.remove();
 				this.world.playSoundAtEntity(this, "random.fizz", 1F, 2.6F + (random.nextFloat() - random.nextFloat()) * 0.8F);
+				createSphericalParticles(0.25, 8, 0.9, 0.5, 0.1);
 				return;
 			}
 		}
@@ -46,6 +47,9 @@ public class EntityLaserOrange extends EntityLaser{
 		// Normal Laser tick
 		super.tick();
 		this.world.spawnParticle("laserdust", this.x, this.y, this.z, 0.9, 0.5 , 0.1);
+		if (this.removed) {
+			createSphericalParticles(0.25, 8, 0.9, 0.5, 0.1);
+		}
 
 		// Burn Entity on hit
 		if (hitResult != null) {
@@ -53,7 +57,6 @@ public class EntityLaserOrange extends EntityLaser{
 				hitResult.entity.fireHurt();
 			}
 		}
-
 	}
 }
 

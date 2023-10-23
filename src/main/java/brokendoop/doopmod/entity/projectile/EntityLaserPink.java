@@ -25,9 +25,12 @@ public class EntityLaserPink extends EntityLaser{
 		this.laserDamage = 3;
 		this.laserFireDamage = 3;
 	}
-	public void tick(){
+	public void tick() {
 		super.tick();
-		this.world.spawnParticle("laserdust", this.x, this.y, this.z, 1, 0.75 , 0.75);
+		this.world.spawnParticle("laserdust", this.x, this.y, this.z, 1, 0.75, 0.75);
+		if (this.removed) {
+			createSphericalParticles(0.25, 8, 1, 0.75, 0.75);
+		}
 	}
 }
 

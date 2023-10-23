@@ -132,6 +132,7 @@ public class EntityLaser extends Entity {
 		}
 
 	}
+
 	public void tick() {
 		xTileOld = xTile;
 		yTileOld = yTile;
@@ -235,9 +236,6 @@ public class EntityLaser extends Entity {
 		this.xRot = this.xRotO + (this.xRot - this.xRotO) * 0.2F;
 		this.yRot = this.yRotO + (this.yRot - this.yRotO) * 0.2F;
 
-		if (laserType == 0){
-			this.world.spawnParticle("laserdust", this.x, this.y, this.z, 0.9, 0 , 0);
-		}
 
 		if (this.isInWater()) {
 			for(int i1 = 0; i1 < 4; ++i1) {
@@ -248,6 +246,13 @@ public class EntityLaser extends Entity {
 		calculateBounces();
 		this.yd -= this.laserGravity;
 		this.setPos(this.x, this.y, this.z);
+
+		if (laserType == 0){
+			this.world.spawnParticle("laserdust", this.x, this.y, this.z, 0.9, 0 , 0);
+			if (this.removed) {
+				createSphericalParticles(0.25, 8, 0.9, 0, 0);
+			}
+		}
 
 	}
 	//This voodoo witchcraft shit is essentially me pouring chemical X onto useless's code
@@ -317,6 +322,18 @@ public class EntityLaser extends Entity {
 			laserBounce--;
 		} else {
 			this.remove();
+		}
+	}
+	//this is used to create particles in a radius around the removal/death point of the projectile
+	public void createSphericalParticles(double radius, int numParticles, double red, double green, double blue) {
+		for (int i = 0; i < numParticles; i++) {
+			double theta = 2 * Math.PI * Math.random();
+			double phi = Math.acos(2 * Math.random() - 1);
+			double x = this.x + radius * Math.sin(phi) * Math.cos(theta);
+			double y = this.y + radius * Math.sin(phi) * Math.sin(theta);
+			double z = this.z + radius * Math.cos(phi);
+
+			this.world.spawnParticle("laserdust", x, y, z, red, green, blue);
 		}
 	}
 

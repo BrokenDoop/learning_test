@@ -24,10 +24,13 @@ public class EntityLaserBlue extends EntityLaser{
 		this.laserGravity = 0F;
 		this.laserDamage = 2;
 		this.laserFireDamage = 3;
-		}
-	public void tick(){
+	}
+	public void tick() {
 		super.tick();
 		this.world.spawnParticle("laserdust", this.x, this.y, this.z, 0.1, 0.1 , 1);
+		if (this.removed) {
+			createSphericalParticles(0.25, 8, 0.1, 0.1 , 1);
+		}
 	}
 }
 
