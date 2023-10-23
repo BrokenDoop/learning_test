@@ -1,8 +1,6 @@
 package brokendoop.doopmod.entity.projectile;
 
 import net.minecraft.core.entity.EntityLiving;
-import net.minecraft.core.util.helper.DamageType;
-import net.minecraft.core.util.helper.MathHelper;
 import net.minecraft.core.world.World;
 
 public class EntityLaserOrange extends EntityLaser{

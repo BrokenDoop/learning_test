@@ -13,13 +13,13 @@ public class EntityLaserdustFX extends EntityFX {
 
 	public EntityLaserdustFX(World world, double d, double d1, double d2, double f, double red, double green, double blue) {
 		super(world, d, d1, d2, 0.0, 0.0, 0.0);
-		this.xd *= 0.10000000149011612;
-		this.yd *= 0.10000000149011612;
-		this.zd *= 0.10000000149011612;
+		this.xd *= 0.1;
+		this.yd *= 0.1;
+		this.zd *= 0.1;
 		float f4 = (float)Math.random() * 0.4F + 0.6F;
-		this.particleRed = (float) (((Math.random() * 0.20000000298023224) + 0.8F) * red * f4);
-		this.particleGreen = (float) (((Math.random() * 0.20000000298023224) + 0.8F) * green * f4);
-		this.particleBlue = (float) (((Math.random() * 0.20000000298023224) + 0.8F) * blue * f4);
+		this.particleRed = (float) (((Math.random() * 0.2) + 0.8F) * red * f4);
+		this.particleGreen = (float) (((Math.random() * 0.2) + 0.8F) * green * f4);
+		this.particleBlue = (float) (((Math.random() * 0.2) + 0.8F) * blue * f4);
 		this.particleScale *= 0.75F;
 		this.particleScale *= f;
 		this.field_673_a = this.particleScale;

@@ -10,6 +10,8 @@ public class ModEntities {
 
 	public static void register() {
 		EntityHelper.createEntity(EntityLaser.class, new LaserRenderer(), 205, "laser");
+
+		//particles
 		ParticleHelper.createParticle(EntityLaserdustFX.class, "laserdust");
 	}
 
