@@ -324,19 +324,19 @@ public class EntityLaser extends Entity {
 			this.remove();
 		}
 	}
+
 	//this is used to create particles in a radius around the removal/death point of the projectile
 	public void createSphericalParticles(double radius, int numParticles, double red, double green, double blue) {
 		for (int i = 0; i < numParticles; i++) {
 			double theta = 2 * Math.PI * Math.random();
 			double phi = Math.acos(2 * Math.random() - 1);
-			double x = this.x + radius * Math.sin(phi) * Math.cos(theta);
-			double y = this.y + radius * Math.sin(phi) * Math.sin(theta);
-			double z = this.z + radius * Math.cos(phi);
+			double xrp = this.x + radius * Math.sin(phi) * Math.cos(theta);
+			double yrp = this.y + radius * Math.sin(phi) * Math.sin(theta);
+			double zrp = this.z + radius * Math.cos(phi);
 
-			this.world.spawnParticle("laserdust", x, y, z, red, green, blue);
+			this.world.spawnParticle("laserdust", xrp, yrp, zrp, red, green, blue);
 		}
 	}
-
 
 	public int getLaserType() {
 		return this.laserType;
