@@ -33,5 +33,6 @@ public class DoopMod implements ModInitializer {
 
 		ModItems.register();
 		ModEntities.register();
+		ModSounds.register();
     }
 }
