@@ -184,11 +184,11 @@ public class EntityLaser extends Entity {
 					}
 					hitResult.entity.hurt(this.owner, this.laserFireDamage, DamageType.FIRE);
 					if (laserPierce > 0) {
-						//laser pierce sound goes here I think
+						this.world.playSoundAtEntity(this, "doopmod.laserpierce", 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
 						laserPierce--;
 					} else {
 						this.remove();
-						this.world.playSoundAtEntity(this, "random.drr", 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
+						this.world.playSoundAtEntity(this, "doopmod.laserhit", 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
 					}
 				}
 			} else {
@@ -316,11 +316,12 @@ public class EntityLaser extends Entity {
 		this.z = zTile + relZ + deltaZ * 0.05;
 
 		//play stupid sound
-		this.world.playSoundAtEntity(this, "random.drr", 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
 		if (laserBounce > 0) { // If bounces available
 			setLaserHeading(deltaX, deltaY, deltaZ, 1.5f, 1f);
+			this.world.playSoundAtEntity(this, "doopmod.laserbounce", 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
 			laserBounce--;
 		} else {
+			this.world.playSoundAtEntity(this, "doopmod.laserhit", 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
 			this.remove();
 		}
 	}

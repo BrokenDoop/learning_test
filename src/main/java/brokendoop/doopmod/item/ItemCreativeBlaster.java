@@ -1,12 +1,10 @@
 package brokendoop.doopmod.item;
 
 import brokendoop.doopmod.entity.projectile.*;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.entity.Entity;
 import net.minecraft.core.entity.player.EntityPlayer;
 import net.minecraft.core.item.Item;
 import net.minecraft.core.item.ItemStack;
-import net.minecraft.core.sound.SoundType;
 import net.minecraft.core.world.World;
 
 public class ItemCreativeBlaster extends Item {
