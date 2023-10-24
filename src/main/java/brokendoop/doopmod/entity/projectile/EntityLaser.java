@@ -27,6 +27,7 @@ public class EntityLaser extends Entity {
 	public boolean doesLaserBelongToPlayer;
 	public EntityLiving owner;
 	protected int ticksInAir;
+	protected int ticksSoundDelay;
 	protected double laserSpeed;
 	protected float laserBounce;
 	protected float laserPierce;
@@ -54,6 +55,7 @@ public class EntityLaser extends Entity {
 		this.doesLaserBelongToPlayer = false;
 		this.laserType = laserType;
 		this.ticksInAir = 0;
+		this.ticksSoundDelay = 0;
 		this.fireImmune = true;
 		this.setSize(0.5F, 0.5F);
 		this.setPos(x, y, z);
@@ -118,6 +120,7 @@ public class EntityLaser extends Entity {
 		this.yRotO = this.yRot = (float)Math.toDegrees(Math.atan2(deltaX, deltaZ));
 		this.xRotO = this.xRot = (float)Math.toDegrees(Math.atan2(deltaY, currentSpeedHorizontally));
 		this.ticksInAir = 0;
+		this.ticksSoundDelay = 0;
 	}
 
 	public void lerpMotion(double xd, double yd, double zd) {
@@ -143,6 +146,7 @@ public class EntityLaser extends Entity {
 			this.yRotO = this.yRot = (float)Math.toDegrees(Math.atan2(this.xd, this.zd));
 			this.xRotO = this.xRot = (float)Math.toDegrees(Math.atan2(this.yd, f));
 		}
+		++this.ticksSoundDelay;
 		++this.ticksInAir;
 		Vec3d oldPos = Vec3d.createVector(this.x, this.y, this.z);
 		Vec3d newPos = Vec3d.createVector(this.x + this.xd, this.y + this.yd, this.z + this.zd);
@@ -238,9 +242,13 @@ public class EntityLaser extends Entity {
 
 
 		if (this.isInWater()) {
-			for(int i1 = 0; i1 < 4; ++i1) {
+			for (int i1 = 0; i1 < 4; ++i1) {
 				float f6 = 0.25F;
 				this.world.spawnParticle("bubble", this.x - this.xd * (double)f6, this.y - this.yd * (double)f6, this.z - this.zd * (double)f6, this.xd, this.yd, this.zd);
+			}
+			if (this.ticksSoundDelay >= 3) {
+				this.world.playSoundAtEntity(this, "doopmod.laser.inwater", 0.5F, 2.6F + (random.nextFloat() - random.nextFloat()) * 0.8F);
+				this.ticksSoundDelay = 0;
 			}
 		}
 		calculateBounces();
