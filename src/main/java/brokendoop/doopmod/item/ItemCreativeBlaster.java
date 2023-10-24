@@ -35,7 +35,7 @@ public class ItemCreativeBlaster extends Item {
 		}
 		if (entityToFire != null){
 			itemstack.damageItem(1, entityplayer);
-			world.playSoundAtEntity(entityplayer, "doopmod.lasershot", 0.3F, 1.0F / (itemRand.nextFloat() * 0.4F + 0.8F));
+			world.playSoundAtEntity(entityplayer, "doopmod.laser.shot", 0.3F, 1.0F / (itemRand.nextFloat() * 0.4F + 0.8F));
 			if (!world.isClientSide) {
 				world.entityJoinedWorld(entityToFire);
 			}
