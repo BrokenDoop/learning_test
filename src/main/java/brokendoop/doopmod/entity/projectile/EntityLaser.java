@@ -247,10 +247,11 @@ public class EntityLaser extends Entity {
 				this.world.spawnParticle("bubble", this.x - this.xd * (double)f6, this.y - this.yd * (double)f6, this.z - this.zd * (double)f6, this.xd, this.yd, this.zd);
 			}
 			if (this.ticksSoundDelay >= 3) {
-				this.world.playSoundAtEntity(this, "doopmod.laser.inwater", 0.5F, 2.6F + (random.nextFloat() - random.nextFloat()) * 0.8F);
+				this.world.playSoundAtEntity(this, "doopmod.laser.sizzle", 0.5F, 2.6F + (random.nextFloat() - random.nextFloat()) * 0.8F);
 				this.ticksSoundDelay = 0;
 			}
 		}
+
 		calculateBounces();
 		this.yd -= this.laserGravity;
 		this.setPos(this.x, this.y, this.z);
