@@ -188,11 +188,11 @@ public class EntityLaser extends Entity {
 					}
 					hitResult.entity.hurt(this.owner, this.laserFireDamage, DamageType.FIRE);
 					if (laserPierce > 0) {
-						this.world.playSoundAtEntity(this, "doopmod.laser.pierce", 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
+						this.world.playSoundAtEntity(this, "doopmod.laser.pierce", 1.0F, 1F / (this.random.nextFloat() * 0.2F + 0.9F));
 						laserPierce--;
 					} else {
 						this.remove();
-						this.world.playSoundAtEntity(this, "doopmod.laser.hit", 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
+						this.world.playSoundAtEntity(this, "doopmod.laser.hit", 1.0F, 1F / (this.random.nextFloat() * 0.2F + 0.9F));
 					}
 				}
 			} else {
@@ -247,7 +247,7 @@ public class EntityLaser extends Entity {
 				this.world.spawnParticle("bubble", this.x - this.xd * (double)f6, this.y - this.yd * (double)f6, this.z - this.zd * (double)f6, this.xd, this.yd, this.zd);
 			}
 			if (this.ticksSoundDelay >= 3) {
-				this.world.playSoundAtEntity(this, "doopmod.laser.sizzle", 0.5F, 2.6F + (random.nextFloat() - random.nextFloat()) * 0.8F);
+				this.world.playSoundAtEntity(this, "doopmod.laser.sizzle", 0.3F, 2.6F + (random.nextFloat() - random.nextFloat()) * 0.8F);
 				this.ticksSoundDelay = 0;
 			}
 		}
@@ -267,7 +267,10 @@ public class EntityLaser extends Entity {
 	//This voodoo witchcraft shit is essentially me pouring chemical X onto useless's code
 	private void calculateBounces(){
 		if (xTile == xTileOld && yTile == yTileOld && zTile == zTileOld) return; // Don't bounce if block hit is the same as the previous block
-		if (world.getBlockId(this.xTile, this.yTile, this.zTile) == 0) return; // Don't bounce if hitting air
+		if (world.getBlockId(this.xTile, this.yTile, this.zTile) == 0 ||
+			world.getBlockId(this.xTile, this.yTile, this.zTile) == 190 ||
+			world.getBlockId(this.xTile, this.yTile, this.zTile) == 527 ||
+			world.getBlockId(this.xTile, this.yTile, this.zTile) == 730) return; // Don't bounce if hitting air, glass, glass pane or ice.
 		if (hitResult == null) return; // Don't bounce if ray-cast result is null
 		Side sideHit = hitResult.side;
 
@@ -327,10 +330,10 @@ public class EntityLaser extends Entity {
 		//play stupid sound
 		if (laserBounce > 0) { // If bounces available
 			setLaserHeading(deltaX, deltaY, deltaZ, 1.5f, 1f);
-			this.world.playSoundAtEntity(this, "doopmod.laser.bounce", 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
+			this.world.playSoundAtEntity(this, "doopmod.laser.bounce", 1.0F, 1F / (this.random.nextFloat() * 0.2F + 0.9F));
 			laserBounce--;
 		} else {
-			this.world.playSoundAtEntity(this, "doopmod.laser.hit", 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
+			this.world.playSoundAtEntity(this, "doopmod.laser.hit", 1.0F, 1F / (this.random.nextFloat() * 0.2F + 0.9F));
 			this.remove();
 		}
 	}
