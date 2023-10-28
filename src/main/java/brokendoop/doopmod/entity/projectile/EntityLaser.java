@@ -81,11 +81,8 @@ public class EntityLaser extends Entity {
 			this.y - 0.1,
 			this.z - (MathHelper.sin((float)Math.toRadians(this.yRot)) * 0.16F));
 
-		this.setLaserHeading(
-			(-MathHelper.sin((float)Math.toRadians(this.yRot)) * MathHelper.cos((float)Math.toRadians(this.xRot))),
-			(-MathHelper.sin((float)Math.toRadians(this.xRot))),
-			(MathHelper.cos((float)Math.toRadians(this.yRot)) * MathHelper.cos((float)Math.toRadians(this.xRot))),
-			1.5F, 1.0F);
+		Vec3d lookDir = entityliving.getLookAngle();
+		this.setLaserHeading(lookDir.xCoord, lookDir.yCoord, lookDir.zCoord,1.5F, 1.0F);
 	}
 
 	protected void init() {
