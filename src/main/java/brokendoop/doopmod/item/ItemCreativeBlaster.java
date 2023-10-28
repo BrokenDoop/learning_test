@@ -4,6 +4,8 @@ import brokendoop.doopmod.entity.projectile.*;
 import net.minecraft.core.entity.player.EntityPlayer;
 import net.minecraft.core.item.Item;
 import net.minecraft.core.item.ItemStack;
+import net.minecraft.core.util.helper.MathHelper;
+import net.minecraft.core.util.phys.Vec3d;
 import net.minecraft.core.world.World;
 
 public class ItemCreativeBlaster extends Item {
@@ -32,12 +34,40 @@ public class ItemCreativeBlaster extends Item {
 		} else if (entityplayer.inventory.consumeInventoryItem(Item.nethercoal.id)) {
 			laserToFire = new  EntityLaserOrange(world, entityplayer, true);
 		} else if (entityplayer.inventory.consumeInventoryItem(Item.dustGlowstone.id)) {
+			EntityLaser laserToFireL = new  EntityLaserYellow(world, entityplayer, true);
+			EntityLaser laserToFireR = new  EntityLaserYellow(world, entityplayer, true);
 			laserToFire = new  EntityLaserYellow(world, entityplayer, true);
 
 
-			//I tried calculating an offset for the firing angle but I couldnt do it without it breaking when you look up/down in different ways.
+			double spreadAmount = 1;
 
-			//laserToFire.setLaserHeading(newDirectionX, newDirectionY, newDirectionZ, 1.5f, 1.0f);
+			//Gross vector math
+			Vec3d lookDir = entityplayer.getLookAngle();
+
+			if (entityplayer.xRot > 89.9){
+				entityplayer.xRot = 89.9f;
+			}
+			if (entityplayer.xRot < -89.9){
+				entityplayer.xRot = -89.9f;
+			}
+
+			Vec3d lookDir2 = entityplayer.getLookAngle();
+
+			lookDir2.rotateAroundY((float) Math.toRadians(90));
+			lookDir2.yCoord = 0;
+			Vec3d newVec = lookDir.addVector(lookDir2.normalize().xCoord * spreadAmount, lookDir2.normalize().yCoord * spreadAmount, lookDir2.normalize().zCoord * spreadAmount);
+			laserToFireR.setLaserHeading(newVec.xCoord, newVec.yCoord, newVec.zCoord,1.5F, 1.0F);
+			newVec = lookDir.addVector(-lookDir2.normalize().xCoord * spreadAmount, -lookDir2.normalize().yCoord * spreadAmount, -lookDir2.normalize().zCoord * spreadAmount);
+			laserToFireL.setLaserHeading(newVec.xCoord, newVec.yCoord, newVec.zCoord,1.5F, 1.0F);
+
+			itemstack.damageItem(1, entityplayer);
+			world.playSoundAtEntity(entityplayer, "doopmod.laser.shot", 0.3F, 1.0F / (itemRand.nextFloat() * 0.4F + 0.8F));
+			if (!world.isClientSide) {
+				world.entityJoinedWorld(laserToFire);
+				world.entityJoinedWorld(laserToFireL);
+				world.entityJoinedWorld(laserToFireR);
+			}
+			return itemstack;
 		}
 		if (laserToFire != null){
 			itemstack.damageItem(1, entityplayer);
