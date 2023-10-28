@@ -42,7 +42,6 @@ public class EntityLaser extends Entity {
 	static {
 		collisionExclusionList.add(0);
 		collisionExclusionList.add(Block.glass.id);
-		collisionExclusionList.add(Block.glassTinted.id);
 		collisionExclusionList.add(Block.trapdoorGlass.id);
 		collisionExclusionList.add(Block.ice.id);
 	}
@@ -354,11 +353,11 @@ public class EntityLaser extends Entity {
 		for (int i = 0; i < numParticles; i++) {
 			double theta = 2 * Math.PI * Math.random();
 			double phi = Math.acos(2 * Math.random() - 1);
-			double xrp = this.x + radius * Math.sin(phi) * Math.cos(theta);
-			double yrp = this.y + radius * Math.sin(phi) * Math.sin(theta);
-			double zrp = this.z + radius * Math.cos(phi);
+			double xP = this.x + radius * Math.sin(phi) * Math.cos(theta);
+			double yP = this.y + radius * Math.sin(phi) * Math.sin(theta);
+			double zP = this.z + radius * Math.cos(phi);
 
-			this.world.spawnParticle("laserdust", xrp, yrp, zrp, red, green, blue);
+			this.world.spawnParticle("laserdust", xP, yP, zP, red, green, blue);
 		}
 	}
 

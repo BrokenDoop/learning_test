@@ -18,12 +18,12 @@ public class EntityLaserBlack extends EntityLaser{
 
 	protected void init() {
 		this.laserBounce = 0;
-		this.laserPierce = 0;
-		this.laserSpread = 6;
-		this.laserSpeed = 0.5F;
-		this.laserGravity = 0.009F;
-		this.laserDamage = 4;
-		this.laserFireDamage = 6;
+		this.laserPierce = 3;
+		this.laserSpread = 3;
+		this.laserSpeed = 1.2F;
+		this.laserGravity = 0F;
+		this.laserDamage = 3;
+		this.laserFireDamage = 4;
 	}
 	public void tick() {
 		super.tick();

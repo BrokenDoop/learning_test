@@ -1,7 +1,6 @@
 package brokendoop.doopmod.item;
 
 import brokendoop.doopmod.entity.projectile.*;
-import net.minecraft.core.entity.Entity;
 import net.minecraft.core.entity.player.EntityPlayer;
 import net.minecraft.core.item.Item;
 import net.minecraft.core.item.ItemStack;
@@ -19,25 +18,32 @@ public class ItemCreativeBlaster extends Item {
 	}
 
 	public ItemStack onItemRightClick(ItemStack itemstack, World world, EntityPlayer entityplayer) {
-		Entity entityToFire = null;
+		EntityLaser laserToFire = null;
 		if (entityplayer.inventory.consumeInventoryItem(Item.dustRedstone.id)) {
-			entityToFire = new EntityLaser(world, entityplayer, true, 0);
+			laserToFire = new EntityLaser(world, entityplayer, true, 0);
 		} else if (entityplayer.inventory.consumeInventoryItem(Item.dye.id)) { //stupid method doesnt let you specify metadeta so I need to change this somehow to only use lapis.
-			entityToFire = new  EntityLaserBlue(world, entityplayer, true);
+			laserToFire = new  EntityLaserBlue(world, entityplayer, true);
 		} else if (entityplayer.inventory.consumeInventoryItem(Item.olivine.id)) {
-			entityToFire = new EntityLaserGreen(world, entityplayer, true);
+			laserToFire = new EntityLaserGreen(world, entityplayer, true);
 		} else if (entityplayer.inventory.consumeInventoryItem(Item.quartz.id)) {
-			entityToFire = new EntityLaserPink(world, entityplayer, true);
+			laserToFire = new EntityLaserPink(world, entityplayer, true);
 		} else if (entityplayer.inventory.consumeInventoryItem(Item.coal.id)) {
-			entityToFire = new  EntityLaserBlack(world, entityplayer, true);
+			laserToFire = new  EntityLaserBlack(world, entityplayer, true);
 		} else if (entityplayer.inventory.consumeInventoryItem(Item.nethercoal.id)) {
-			entityToFire = new  EntityLaserOrange(world, entityplayer, true);
+			laserToFire = new  EntityLaserOrange(world, entityplayer, true);
+		} else if (entityplayer.inventory.consumeInventoryItem(Item.dustGlowstone.id)) {
+			laserToFire = new  EntityLaserYellow(world, entityplayer, true);
+
+
+			//I tried calculating an offset for the firing angle but I couldnt do it without it breaking when you look up/down in different ways.
+
+			//laserToFire.setLaserHeading(newDirectionX, newDirectionY, newDirectionZ, 1.5f, 1.0f);
 		}
-		if (entityToFire != null){
+		if (laserToFire != null){
 			itemstack.damageItem(1, entityplayer);
 			world.playSoundAtEntity(entityplayer, "doopmod.laser.shot", 0.3F, 1.0F / (itemRand.nextFloat() * 0.4F + 0.8F));
 			if (!world.isClientSide) {
-				world.entityJoinedWorld(entityToFire);
+				world.entityJoinedWorld(laserToFire);
 			}
 		}
 		return itemstack;
