@@ -39,7 +39,7 @@ public class ItemCreativeBlaster extends Item {
 			laserToFire = new  EntityLaserYellow(world, entityplayer, true);
 
 
-			double spreadAmount = 1;
+			double spreadAmount = 0.2;
 
 			//Spread vector math
 			Vec3d lookDir = entityplayer.getLookAngle();
@@ -52,7 +52,7 @@ public class ItemCreativeBlaster extends Item {
 
 			itemstack.damageItem(1, entityplayer);
 			world.playSoundAtEntity(entityplayer, "doopmod.laser.shot", 0.3F, 1.0F / (itemRand.nextFloat() * 0.4F + 0.8F));
-			
+
 			if (!world.isClientSide) {
 				world.entityJoinedWorld(laserToFire);
 				world.entityJoinedWorld(laserToFireL);

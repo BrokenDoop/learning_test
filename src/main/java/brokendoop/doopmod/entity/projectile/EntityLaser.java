@@ -240,6 +240,7 @@ public class EntityLaser extends Entity {
 			this.yRotO += 360.0F;
 		}
 		if (this.ticksInAir == 400) {
+			this.world.playSoundAtEntity(this, "doopmod.laser.hit", 1.0F, 1F / (this.random.nextFloat() * 0.2F + 0.9F));
 			this.remove();
 		}
 
