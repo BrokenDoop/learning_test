@@ -41,27 +41,18 @@ public class ItemCreativeBlaster extends Item {
 
 			double spreadAmount = 1;
 
-			//Gross vector math
+			//Spread vector math
 			Vec3d lookDir = entityplayer.getLookAngle();
 
-			if (entityplayer.xRot > 89.9){
-				entityplayer.xRot = 89.9f;
-			}
-			if (entityplayer.xRot < -89.9){
-				entityplayer.xRot = -89.9f;
-			}
+			Vec3d spreadVec = Vec3d.createVector(Math.cos(Math.toRadians(entityplayer.yRot)), 0, Math.sin(Math.toRadians(entityplayer.yRot)));
+			spreadVec = spreadVec.normalize();
 
-			Vec3d lookDir2 = entityplayer.getLookAngle();
-
-			lookDir2.rotateAroundY((float) Math.toRadians(90));
-			lookDir2.yCoord = 0;
-			Vec3d newVec = lookDir.addVector(lookDir2.normalize().xCoord * spreadAmount, lookDir2.normalize().yCoord * spreadAmount, lookDir2.normalize().zCoord * spreadAmount);
-			laserToFireR.setLaserHeading(newVec.xCoord, newVec.yCoord, newVec.zCoord,1.5F, 1.0F);
-			newVec = lookDir.addVector(-lookDir2.normalize().xCoord * spreadAmount, -lookDir2.normalize().yCoord * spreadAmount, -lookDir2.normalize().zCoord * spreadAmount);
-			laserToFireL.setLaserHeading(newVec.xCoord, newVec.yCoord, newVec.zCoord,1.5F, 1.0F);
+			laserToFireR.setLaserHeading(lookDir.xCoord + spreadVec.xCoord * spreadAmount, lookDir.yCoord, lookDir.zCoord + spreadVec.zCoord * spreadAmount,1.5F, 1.0F);
+			laserToFireL.setLaserHeading(lookDir.xCoord - spreadVec.xCoord * spreadAmount, lookDir.yCoord, lookDir.zCoord - spreadVec.zCoord * spreadAmount,1.5F, 1.0F);
 
 			itemstack.damageItem(1, entityplayer);
 			world.playSoundAtEntity(entityplayer, "doopmod.laser.shot", 0.3F, 1.0F / (itemRand.nextFloat() * 0.4F + 0.8F));
+			
 			if (!world.isClientSide) {
 				world.entityJoinedWorld(laserToFire);
 				world.entityJoinedWorld(laserToFireL);
