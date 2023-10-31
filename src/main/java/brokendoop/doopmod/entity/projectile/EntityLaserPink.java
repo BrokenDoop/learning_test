@@ -20,7 +20,7 @@ public class EntityLaserPink extends EntityLaser{
 		this.laserBounce = 0;
 		this.laserPierce = 0;
 		this.laserSpread = 0;
-		this.laserSpeed = 2F;
+		this.laserSpeed = 2.2F;
 		this.laserGravity = 0F;
 		this.laserDamage = 3;
 		this.laserFireDamage = 3;

@@ -19,7 +19,7 @@ public class EntityLaserYellow extends EntityLaser{
 	protected void init() {
 		this.laserBounce = 0;
 		this.laserPierce = 0;
-		this.laserSpread = 3;
+		this.laserSpread = 2;
 		this.laserSpeed = 1.2F;
 		this.laserGravity = 0F;
 		this.laserDamage = 3;

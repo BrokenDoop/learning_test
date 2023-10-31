@@ -36,7 +36,7 @@ public class EntityLaserOrange extends EntityLaser{
 		HitResult waterHit = this.world.checkBlockCollisionBetweenPoints(oldPos, newPos, true, false);
 		if (waterHit != null && waterHit.hitType == HitResult.HitType.TILE){
 			Block block = world.getBlock(waterHit.x, waterHit.y, waterHit.z);
-			if (block.blockMaterial == Material.water) {
+			if (block.blockMaterial == Material.water || block.blockMaterial == Material.ice) {
 				this.remove();
 				this.world.playSoundAtEntity(this, "random.fizz", 1F, 2.6F + (random.nextFloat() - random.nextFloat()) * 0.8F);
 				createSphericalParticles(0.25, 8, 0.9, 0.5, 0.1);

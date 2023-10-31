@@ -272,8 +272,6 @@ public class EntityLaser extends Entity {
 
 	}
 
-
-
 	//This voodoo witchcraft shit is essentially me pouring chemical X onto useless's code
 	private void calculateBounces(){
 		if (xTile == xTileOld && yTile == yTileOld && zTile == zTileOld) return; // Don't bounce if block hit is the same as the previous block
