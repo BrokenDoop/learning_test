@@ -17,9 +17,10 @@ public class EntityLaserdustFX extends EntityFX {
 		this.yd *= 0.1;
 		this.zd *= 0.1;
 		float f4 = (float)Math.random() * 0.4F + 0.6F;
-		this.particleRed = (float) (((Math.random() * 0.2) + 0.8F) * red * f4);
-		this.particleGreen = (float) (((Math.random() * 0.2) + 0.8F) * green * f4);
-		this.particleBlue = (float) (((Math.random() * 0.2) + 0.8F) * blue * f4);
+		float f5 = (float)(Math.random() * 0.2) + 0.8F;
+		this.particleRed = (float) (f5 * red * f4);
+		this.particleGreen = (float) (f5 * green * f4);
+		this.particleBlue = (float) (f5 * blue * f4);
 		this.particleScale *= 0.75F;
 		this.particleScale *= f;
 		this.field_673_a = this.particleScale;

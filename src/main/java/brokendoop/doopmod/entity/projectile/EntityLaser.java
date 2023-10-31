@@ -269,7 +269,6 @@ public class EntityLaser extends Entity {
 				createSphericalParticles(0.25, 8, 0.9, 0, 0);
 			}
 		}
-
 	}
 
 	//This voodoo witchcraft shit is essentially me pouring chemical X onto useless's code
