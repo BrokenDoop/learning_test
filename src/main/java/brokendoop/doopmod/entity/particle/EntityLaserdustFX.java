@@ -7,12 +7,12 @@ import net.minecraft.core.world.World;
 public class EntityLaserdustFX extends EntityFX {
 	float field_673_a;
 
-	public EntityLaserdustFX(World world, double d, double d1, double d2, double f, double f1, double f2) {
-		this(world, d, d1, d2, 1.0F, f, f1, f2);
+	public EntityLaserdustFX(World world, double x, double y, double z, double red, double green, double blue) {
+		this(world, x, y, z, red, green, blue, 1.0F);
 	}
 
-	public EntityLaserdustFX(World world, double d, double d1, double d2, double f, double red, double green, double blue) {
-		super(world, d, d1, d2, 0.0, 0.0, 0.0);
+	public EntityLaserdustFX(World world, double x, double y, double z, double red, double green, double blue, double scale) {
+		super(world, x, y, z, 0.0, 0.0, 0.0);
 		this.xd *= 0.1;
 		this.yd *= 0.1;
 		this.zd *= 0.1;
@@ -22,10 +22,10 @@ public class EntityLaserdustFX extends EntityFX {
 		this.particleGreen = (float) (f5 * green * f4);
 		this.particleBlue = (float) (f5 * blue * f4);
 		this.particleScale *= 0.75F;
-		this.particleScale *= f;
+		this.particleScale *= scale;
 		this.field_673_a = this.particleScale;
 		this.particleMaxAge = (int)(8.0 / (Math.random() * 0.8 + 0.2));
-		this.particleMaxAge = (int)((float)this.particleMaxAge * f);
+		this.particleMaxAge = (int)((float)this.particleMaxAge * scale);
 		this.noPhysics = false;
 	}
 

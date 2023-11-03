@@ -351,10 +351,10 @@ public class EntityLaser extends Entity {
 			double xP = this.x + radius * Math.sin(phi) * Math.cos(theta);
 			double yP = this.y + radius * Math.sin(phi) * Math.sin(theta);
 			double zP = this.z + radius * Math.cos(phi);
-
 			this.world.spawnParticle("laserdust", xP, yP, zP, red, green, blue);
 		}
 	}
+
 
 	public int getLaserType() {
 		return this.laserType;
