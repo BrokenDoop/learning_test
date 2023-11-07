@@ -1,11 +1,14 @@
 package brokendoop.doopmod.entity.projectile;
 
 
+import brokendoop.doopmod.entity.particle.EntityLaserdustFX;
 import com.mojang.nbt.CompoundTag;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.HitResult;
 import net.minecraft.core.block.Block;
 import net.minecraft.core.entity.Entity;
 import net.minecraft.core.entity.EntityLiving;
+import net.minecraft.core.entity.fx.EntityFX;
 import net.minecraft.core.entity.player.EntityPlayer;
 import net.minecraft.core.util.helper.DamageType;
 import net.minecraft.core.util.helper.MathHelper;
@@ -19,6 +22,7 @@ import java.util.List;
 
 public class EntityLaser extends Entity {
 	//your shits all fucked, fix it, need to fix this entirely.
+	//Need to fix collisions entirely, they are FUCKED!
 	protected int xTile;
 	protected int yTile;
 	protected int zTile;
@@ -348,13 +352,32 @@ public class EntityLaser extends Entity {
 		for (int i = 0; i < numParticles; i++) {
 			double theta = 2 * Math.PI * Math.random();
 			double phi = Math.acos(2 * Math.random() - 1);
-			double xP = this.x + radius * Math.sin(phi) * Math.cos(theta);
-			double yP = this.y + radius * Math.sin(phi) * Math.sin(theta);
-			double zP = this.z + radius * Math.cos(phi);
-			this.world.spawnParticle("laserdust", xP, yP, zP, red, green, blue);
+			double velocityX = Math.sin(phi) * Math.cos(theta);
+			double velocityY = Math.sin(phi) * Math.sin(theta);
+			double velocityZ = Math.cos(phi);
+			double d1 = MathHelper.sqrt_double(velocityX * velocityX + velocityY * velocityY + velocityZ * velocityZ);
+			velocityX /= d1;
+			velocityY /= d1;
+			velocityZ /= d1;
+			double d2 = 0.5 / (d1 / radius + 0.1);
+			d2 *= (0.2 + random.nextFloat() * (0.3 - 0.2));
+			velocityX *= d2;
+			velocityY *= d2;
+			velocityZ *= d2;
+			spawnParticle(new EntityLaserdustFX(world, this.x, this.y, this.z, velocityX, velocityY, velocityZ, red, green, blue, 1));
 		}
 	}
-
+	public static void spawnParticle(EntityFX particle){
+		if (Minecraft.getMinecraft(Minecraft.class) == null || Minecraft.getMinecraft(Minecraft.class).thePlayer == null || Minecraft.getMinecraft(Minecraft.class).effectRenderer == null)
+			return;
+		double d6 = Minecraft.getMinecraft(Minecraft.class).thePlayer.x - particle.x;
+		double d7 = Minecraft.getMinecraft(Minecraft.class).thePlayer.y - particle.y;
+		double d8 = Minecraft.getMinecraft(Minecraft.class).thePlayer.z - particle.z;
+		double d9 = 16.0D;
+		if (d6 * d6 + d7 * d7 + d8 * d8 > d9 * d9)
+			return;
+		Minecraft.getMinecraft(Minecraft.class).effectRenderer.addEffect(particle);
+	}
 
 	public int getLaserType() {
 		return this.laserType;

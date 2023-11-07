@@ -8,14 +8,17 @@ public class EntityLaserdustFX extends EntityFX {
 	float field_673_a;
 
 	public EntityLaserdustFX(World world, double x, double y, double z, double red, double green, double blue) {
-		this(world, x, y, z, red, green, blue, 1.0F);
+		this(world, x, y, z, 0, 0, 0, red, green, blue, 1.0F);
 	}
 
-	public EntityLaserdustFX(World world, double x, double y, double z, double red, double green, double blue, double scale) {
+	public EntityLaserdustFX(World world, double x, double y, double z, double motionX, double motionY, double motionZ, double red, double green, double blue, double scale) {
 		super(world, x, y, z, 0.0, 0.0, 0.0);
 		this.xd *= 0.1;
 		this.yd *= 0.1;
 		this.zd *= 0.1;
+		this.xd += motionX;
+		this.yd += motionY;
+		this.zd += motionZ;
 		float f4 = (float)Math.random() * 0.4F + 0.6F;
 		float f5 = (float)(Math.random() * 0.2) + 0.8F;
 		this.particleRed = (float) (f5 * red * f4);
