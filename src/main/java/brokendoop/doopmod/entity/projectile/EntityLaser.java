@@ -48,6 +48,19 @@ public class EntityLaser extends Entity {
 		collisionExclusionList.add(Block.glass.id);
 		collisionExclusionList.add(Block.trapdoorGlass.id);
 		collisionExclusionList.add(Block.ice.id);
+		collisionExclusionList.add(Block.mesh.id);
+		collisionExclusionList.add(Block.fenceChainlink.id);
+		collisionExclusionList.add(Block.lanternFireflyBlue.id);
+		collisionExclusionList.add(Block.lanternFireflyRed.id);
+		collisionExclusionList.add(Block.lanternFireflyGreen.id);
+		collisionExclusionList.add(Block.lanternFireflyOrange.id);
+		collisionExclusionList.add(Block.leavesOak.id);
+		collisionExclusionList.add(Block.leavesBirch.id);
+		collisionExclusionList.add(Block.leavesPine.id);
+		collisionExclusionList.add(Block.leavesCherry.id);
+		collisionExclusionList.add(Block.leavesEucalyptus.id);
+		collisionExclusionList.add(Block.leavesCherryFlowering.id);
+		collisionExclusionList.add(Block.leavesShrub.id);
 	}
 	public EntityLaser(World world) {
 		this(world, 0);
@@ -160,7 +173,7 @@ public class EntityLaser extends Entity {
 		++this.ticksInAir;
 		Vec3d oldPos = Vec3d.createVector(this.x, this.y, this.z);
 		Vec3d newPos = Vec3d.createVector(this.x + this.xd, this.y + this.yd, this.z + this.zd);
-		hitResult = checkBlockCollisionBetweenPointsCustomBlacklist(oldPos, newPos, false, true, collisionExclusionList);
+		hitResult = checkBlockCollisionBetweenPointsWithBlacklist(oldPos, newPos, false, true, collisionExclusionList);
 		oldPos = Vec3d.createVector(this.x, this.y, this.z);
 		newPos = Vec3d.createVector(this.x + this.xd, this.y + this.yd, this.z + this.zd);
 		if (hitResult != null) {
@@ -278,8 +291,6 @@ public class EntityLaser extends Entity {
 	//This voodoo witchcraft shit is essentially me pouring chemical X onto useless's code
 	private void calculateBounces(){
 		if (xTile == xTileOld && yTile == yTileOld && zTile == zTileOld) return; // Don't bounce if block hit is the same as the previous block
-		int blockId = world.getBlockId(this.xTile, this.yTile, this.zTile);
-		if (collisionExclusionList.contains(blockId)) {return;} // Don't collide with excluded blocks
 		if (hitResult == null) return; // Don't bounce if ray-cast result is null
 		Side sideHit = hitResult.side;
 
@@ -400,119 +411,151 @@ public class EntityLaser extends Entity {
 	public float getShadowHeightOffs() {
 		return 0.0F;
 	}
-	public HitResult checkBlockCollisionBetweenPointsCustomBlacklist(Vec3d start, Vec3d end, boolean shouldCollideWithFluids, boolean flag1, List<Integer> collisionBlacklist) {
-		HitResult movingobjectposition;
-		if (Double.isNaN(start.xCoord) || Double.isNaN(start.yCoord) || Double.isNaN(start.zCoord)) {
-			return null;
-		}
-		if (Double.isNaN(end.xCoord) || Double.isNaN(end.yCoord) || Double.isNaN(end.zCoord)) {
-			return null;
-		}
-		int blockEndX = MathHelper.floor_double(end.xCoord);
-		int blockEndY = MathHelper.floor_double(end.yCoord);
-		int blockEndZ = MathHelper.floor_double(end.zCoord);
-		int blockStartX = MathHelper.floor_double(start.xCoord);
-		int blockStartY = MathHelper.floor_double(start.yCoord);
-		int blockStartZ = MathHelper.floor_double(start.zCoord);
-		int id = world.getBlockId(blockStartX, blockStartY, blockStartZ);
-		int meta = world.getBlockMetadata(blockStartX, blockStartY, blockStartZ);
-		Block block = Block.blocksList[id];
-		if ((!flag1 || block == null || block.getCollisionBoundingBoxFromPool(world, blockStartX, blockStartY, blockStartZ) != null) && id > 0 && !collisionBlacklist.contains(block.id) && block.canCollideCheck(meta, shouldCollideWithFluids) && (movingobjectposition = block.collisionRayTrace(world, blockStartX, blockStartY, blockStartZ, start, end)) != null) {
-			return movingobjectposition;
-		}
-		int l1 = 200;
-		while (l1-- >= 0) {
-			HitResult movingobjectposition1;
-			if (Double.isNaN(start.xCoord) || Double.isNaN(start.yCoord) || Double.isNaN(start.zCoord)) {
-				return null;
-			}
-			if (blockStartX == blockEndX && blockStartY == blockEndY && blockStartZ == blockEndZ) {
-				return null;
-			}
-			boolean flag2 = true;
-			boolean flag3 = true;
-			boolean flag4 = true;
-			double d = 999.0;
-			double d1 = 999.0;
-			double d2 = 999.0;
-			if (blockEndX > blockStartX) {
-				d = (double)blockStartX + 1.0;
-			} else if (blockEndX < blockStartX) {
-				d = (double)blockStartX + 0.0;
-			} else {
-				flag2 = false;
-			}
-			if (blockEndY > blockStartY) {
-				d1 = (double)blockStartY + 1.0;
-			} else if (blockEndY < blockStartY) {
-				d1 = (double)blockStartY + 0.0;
-			} else {
-				flag3 = false;
-			}
-			if (blockEndZ > blockStartZ) {
-				d2 = (double)blockStartZ + 1.0;
-			} else if (blockEndZ < blockStartZ) {
-				d2 = (double)blockStartZ + 0.0;
-			} else {
-				flag4 = false;
-			}
-			double d3 = 999.0;
-			double d4 = 999.0;
-			double d5 = 999.0;
-			double d6 = end.xCoord - start.xCoord;
-			double d7 = end.yCoord - start.yCoord;
-			double d8 = end.zCoord - start.zCoord;
-			if (flag2) {
-				d3 = (d - start.xCoord) / d6;
-			}
-			if (flag3) {
-				d4 = (d1 - start.yCoord) / d7;
-			}
-			if (flag4) {
-				d5 = (d2 - start.zCoord) / d8;
-			}
-			int byte0 = 0;
-			if (d3 < d4 && d3 < d5) {
-				byte0 = blockEndX > blockStartX ? 4 : 5;
-				start.xCoord = d;
-				start.yCoord += d7 * d3;
-				start.zCoord += d8 * d3;
-			} else if (d4 < d5) {
-				byte0 = blockEndY > blockStartY ? 0 : 1;
-				start.xCoord += d6 * d4;
-				start.yCoord = d1;
-				start.zCoord += d8 * d4;
-			} else {
-				byte0 = blockEndZ > blockStartZ ? 2 : 3;
-				start.xCoord += d6 * d5;
-				start.yCoord += d7 * d5;
-				start.zCoord = d2;
-			}
-			Vec3d vec3d2 = Vec3d.createVector(start.xCoord, start.yCoord, start.zCoord);
-			vec3d2.xCoord = MathHelper.floor_double(start.xCoord);
-			blockStartX = (int)vec3d2.xCoord;
-			if (byte0 == 5) {
-				--blockStartX;
-				vec3d2.xCoord += 1.0;
-			}
-			vec3d2.yCoord = MathHelper.floor_double(start.yCoord);
-			blockStartY = (int)vec3d2.yCoord;
-			if (byte0 == 1) {
-				--blockStartY;
-				vec3d2.yCoord += 1.0;
-			}
-			vec3d2.zCoord = MathHelper.floor_double(start.zCoord);
-			blockStartZ = (int)vec3d2.zCoord;
-			if (byte0 == 3) {
-				--blockStartZ;
-				vec3d2.zCoord += 1.0;
-			}
-			int j2 = world.getBlockId(blockStartX, blockStartY, blockStartZ);
-			int k2 = world.getBlockMetadata(blockStartX, blockStartY, blockStartZ);
-			Block block1 = Block.blocksList[j2];
-			if (flag1 && block1 != null && block1.getCollisionBoundingBoxFromPool(world, blockStartX, blockStartY, blockStartZ) == null || j2 <= 0 || (block!=null && !collisionBlacklist.contains(block.id)) || !block1.canCollideCheck(k2, shouldCollideWithFluids) || (movingobjectposition1 = block1.collisionRayTrace(world, blockStartX, blockStartY, blockStartZ, start, end)) == null) continue;
-			return movingobjectposition1;
-		}
-		return null;
-	}
+
+	public HitResult checkBlockCollisionBetweenPointsWithBlacklist(Vec3d start, Vec3d end, boolean shouldCollideWithFluids, boolean shouldCollideWithNonSolids, List<Integer> collisionBlacklist) {
+		if (!Double.isNaN(start.xCoord) && !Double.isNaN(start.yCoord) && !Double.isNaN(start.zCoord)) {
+			if (!Double.isNaN(end.xCoord) && !Double.isNaN(end.yCoord) && !Double.isNaN(end.zCoord)) {
+				int blockEndX = MathHelper.floor_double(end.xCoord);
+				int blockEndY = MathHelper.floor_double(end.yCoord);
+				int blockEndZ = MathHelper.floor_double(end.zCoord);
+				int blockStartX = MathHelper.floor_double(start.xCoord);
+				int blockStartY = MathHelper.floor_double(start.yCoord);
+				int blockStartZ = MathHelper.floor_double(start.zCoord);
+				int id = this.world.getBlockId(blockStartX, blockStartY, blockStartZ);
+				int meta = this.world.getBlockMetadata(blockStartX, blockStartY, blockStartZ);
+				Block block = Block.blocksList[id];
+				if ((!shouldCollideWithNonSolids || block == null || block.getCollisionBoundingBoxFromPool(this.world, blockStartX, blockStartY, blockStartZ) != null) && id > 0 && !collisionBlacklist.contains(id) && (block != null && block.canCollideCheck(meta, shouldCollideWithFluids))) {
+					HitResult movingobjectposition = block.collisionRayTrace(this.world, blockStartX, blockStartY, blockStartZ, start, end);
+					if (movingobjectposition != null) {
+						return movingobjectposition;
+					}
+				}
+
+				int l1 = 200;
+
+				while(l1-- >= 0) {
+					if (Double.isNaN(start.xCoord) || Double.isNaN(start.yCoord) || Double.isNaN(start.zCoord)) {
+						return null;
+					}
+
+					if (blockStartX == blockEndX && blockStartY == blockEndY && blockStartZ == blockEndZ) {
+						return null;
+					}
+
+					boolean flag2 = true;
+					boolean flag3 = true;
+					boolean flag4 = true;
+					double d = 999.0;
+					double d1 = 999.0;
+					double d2 = 999.0;
+					if (blockEndX > blockStartX) {
+						d = (double)blockStartX + 1.0;
+					} else if (blockEndX < blockStartX) {
+						d = (double)blockStartX + 0.0;
+					} else {
+						flag2 = false;
+					}
+
+					if (blockEndY > blockStartY) {
+						d1 = (double)blockStartY + 1.0;
+					} else if (blockEndY < blockStartY) {
+						d1 = (double)blockStartY + 0.0;
+					} else {
+						flag3 = false;
+					}
+
+					if (blockEndZ > blockStartZ) {
+						d2 = (double)blockStartZ + 1.0;
+					} else if (blockEndZ < blockStartZ) {
+						d2 = (double)blockStartZ + 0.0;
+					} else {
+						flag4 = false;
+					}
+
+					double d3 = 999.0;
+					double d4 = 999.0;
+					double d5 = 999.0;
+					double d6 = end.xCoord - start.xCoord;
+					double d7 = end.yCoord - start.yCoord;
+					double d8 = end.zCoord - start.zCoord;
+					if (flag2) {
+						d3 = (d - start.xCoord) / d6;
+					}
+
+					if (flag3) {
+						d4 = (d1 - start.yCoord) / d7;
+					}
+
+					if (flag4) {
+						d5 = (d2 - start.zCoord) / d8;
+					}
+
+					byte byte0;
+					if (d3 < d4 && d3 < d5) {
+						if (blockEndX > blockStartX) {
+							byte0 = 4;
+						} else {
+							byte0 = 5;
+						}
+
+						start.xCoord = d;
+						start.yCoord += d7 * d3;
+						start.zCoord += d8 * d3;
+					} else if (d4 < d5) {
+						if (blockEndY > blockStartY) {
+							byte0 = 0;
+						} else {
+							byte0 = 1;
+						}
+
+						start.xCoord += d6 * d4;
+						start.yCoord = d1;
+						start.zCoord += d8 * d4;
+					} else {
+						if (blockEndZ > blockStartZ) {
+							byte0 = 2;
+						} else {
+							byte0 = 3;
+						}
+
+						start.xCoord += d6 * d5;
+						start.yCoord += d7 * d5;
+						start.zCoord = d2;
+					}
+
+					Vec3d vec3d2 = Vec3d.createVector(start.xCoord, start.yCoord, start.zCoord);
+					blockStartX = (int)(vec3d2.xCoord = MathHelper.floor_double(start.xCoord));
+					if (byte0 == 5) {
+						--blockStartX;
+						++vec3d2.xCoord;
+					}
+
+					blockStartY = (int)(vec3d2.yCoord = MathHelper.floor_double(start.yCoord));
+					if (byte0 == 1) {
+						--blockStartY;
+						++vec3d2.yCoord;
+					}
+
+					blockStartZ = (int)(vec3d2.zCoord = MathHelper.floor_double(start.zCoord));
+					if (byte0 == 3) {
+						--blockStartZ;
+						++vec3d2.zCoord;
+					}
+
+					int id2 = this.world.getBlockId(blockStartX, blockStartY, blockStartZ);
+					int meta2 = this.world.getBlockMetadata(blockStartX, blockStartY, blockStartZ);
+					Block block1 = Block.blocksList[id2];
+					if ((!shouldCollideWithNonSolids || block1 == null || block1.getCollisionBoundingBoxFromPool(this.world, blockStartX, blockStartY, blockStartZ) != null) && id2 > 0 && !collisionBlacklist.contains(id2) && (block1 != null && block1.canCollideCheck(meta2, shouldCollideWithFluids))) {
+						HitResult movingobjectposition1 = block1.collisionRayTrace(this.world, blockStartX, blockStartY, blockStartZ, start, end);
+						if (movingobjectposition1 != null) {
+							return movingobjectposition1;
+						}
+					}
+				}
+
+            }
+        }
+        return null;
+    }
 }
+

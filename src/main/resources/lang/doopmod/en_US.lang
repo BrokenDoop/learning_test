@@ -2,6 +2,11 @@
 item.doopmod.focus.crystal.name=Focus Crystal
 item.doopmod.focus.crystal.desc=A white translucent crystal that seems to bend light.
 item.doopmod.redstone.blaster.uncharged.name=Redstone Blaster
-item.doopmod.redstone.blaster.uncharged.desc=Gun.
+item.doopmod.redstone.blaster.uncharged.desc=Gun.(change later)
 item.doopmod.creative.blaster.name=Creative Blaster
 item.doopmod.creative.blaster.desc=Uses calibration items as ammo.
+
+
+#Blocks
+tile.doopmod.focuscrystalblock.name=Block of Focus Crystal
+tile.doopmod.focuscrystalblock.desc=A large solid focus crystal, seems useless.

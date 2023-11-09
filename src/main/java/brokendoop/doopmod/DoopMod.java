@@ -1,7 +1,9 @@
 package brokendoop.doopmod;
 
+import brokendoop.doopmod.crafting.ModCraftingManager;
 import brokendoop.doopmod.entity.ModEntities;
 import brokendoop.doopmod.item.ModItems;
+import brokendoop.doopmod.block.ModBlocks;
 import net.fabricmc.api.ModInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,5 +36,7 @@ public class DoopMod implements ModInitializer {
 		ModItems.register();
 		ModEntities.register();
 		ModSounds.register();
+		ModBlocks.register();
+		ModCraftingManager.register();
     }
 }
