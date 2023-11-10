@@ -281,7 +281,10 @@ public class EntityLaser extends Entity {
 		this.setPos(this.x, this.y, this.z);
 
 		if (laserType == 0){
-			this.world.spawnParticle("laserdust", this.x, this.y, this.z, 0.9, 0 , 0);
+			double pOffsetX = this.x - this.xd;
+			double pOffsetY = this.y - this.yd;
+			double pOffsetZ = this.z - this.zd;
+			this.world.spawnParticle("laserdust", pOffsetX, pOffsetY, pOffsetZ, 0.9, 0 , 0);
 			if (this.removed) {
 				createSphericalParticles(0.25, 8, 0.9, 0, 0);
 			}
@@ -375,9 +378,13 @@ public class EntityLaser extends Entity {
 			velocityX *= d2;
 			velocityY *= d2;
 			velocityZ *= d2;
-			spawnParticle(new EntityLaserdustFX(world, this.x, this.y, this.z, velocityX, velocityY, velocityZ, red, green, blue, 1));
+			double pOffsetX = this.x - this.xd * 0.1;
+			double pOffsetY = this.y - this.yd * 0.1;
+			double pOffsetZ = this.z - this.zd * 0.1;
+			spawnParticle(new EntityLaserdustFX(world, pOffsetX, pOffsetY, pOffsetZ, velocityX, velocityY, velocityZ, red, green, blue, 1));
 		}
 	}
+
 	public static void spawnParticle(EntityFX particle){
 		if (Minecraft.getMinecraft(Minecraft.class) == null || Minecraft.getMinecraft(Minecraft.class).thePlayer == null || Minecraft.getMinecraft(Minecraft.class).effectRenderer == null)
 			return;

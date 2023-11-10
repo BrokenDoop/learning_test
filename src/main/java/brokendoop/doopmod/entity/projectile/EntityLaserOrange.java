@@ -46,7 +46,10 @@ public class EntityLaserOrange extends EntityLaser{
 
 		// Normal Laser tick
 		super.tick();
-		this.world.spawnParticle("laserdust", this.x, this.y, this.z, 0.9, 0.5 , 0.1);
+		double pOffsetX = this.x - this.xd;
+		double pOffsetY = this.y - this.yd;
+		double pOffsetZ = this.z - this.zd;
+		this.world.spawnParticle("laserdust", pOffsetX, pOffsetY, pOffsetZ, 0.9, 0.5 , 0.1);
 		if (this.removed) {
 			createSphericalParticles(0.25, 8, 0.9, 0.5, 0.1);
 		}

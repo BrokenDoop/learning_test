@@ -27,7 +27,10 @@ public class EntityLaserBlack extends EntityLaser{
 	}
 	public void tick() {
 		super.tick();
-		this.world.spawnParticle("laserdust", this.x, this.y, this.z, 0.05, 0.05, 0.05);
+		double pOffsetX = this.x - this.xd;
+		double pOffsetY = this.y - this.yd;
+		double pOffsetZ = this.z - this.zd;
+		this.world.spawnParticle("laserdust", pOffsetX, pOffsetY, pOffsetZ, 0.05, 0.05, 0.05);
 		if (this.removed) {
 			createSphericalParticles(0.25, 8, 0.05, 0.05, 0.05);
 		}
