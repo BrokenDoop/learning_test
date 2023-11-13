@@ -4,6 +4,7 @@ import net.minecraft.core.entity.EntityLiving;
 import net.minecraft.core.world.World;
 
 public class EntityLaserYellow extends EntityLaser{
+
 	public EntityLaserYellow(World world) {
 		super(world, 6);
 	}
@@ -19,11 +20,11 @@ public class EntityLaserYellow extends EntityLaser{
 	protected void init() {
 		this.laserBounce = 0;
 		this.laserPierce = 0;
-		this.laserSpread = 2;
+		this.laserSpread = 0;
 		this.laserSpeed = 1.2F;
 		this.laserGravity = 0F;
-		this.laserDamage = 3;
-		this.laserFireDamage = 4;
+		this.laserDamage = 1;
+		this.laserFireDamage = 2;
 	}
 	public void tick() {
 		super.tick();
@@ -31,7 +32,7 @@ public class EntityLaserYellow extends EntityLaser{
 		double pOffsetY = this.y - this.yd;
 		double pOffsetZ = this.z - this.zd;
 		this.world.spawnParticle("laserdust", pOffsetX, pOffsetY, pOffsetZ, 1, 1, 0);
-		if (this.ticksInAir == 15) {
+		if (this.ticksInAir == 13) {
 			this.world.playSoundAtEntity(this, "doopmod.laser.hit", 1.0F, 1F / (this.random.nextFloat() * 0.2F + 0.9F));
 			this.remove();
 		}

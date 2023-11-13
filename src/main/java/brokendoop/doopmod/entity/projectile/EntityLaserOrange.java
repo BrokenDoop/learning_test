@@ -57,7 +57,7 @@ public class EntityLaserOrange extends EntityLaser{
 		// Burn Entity on hit
 		if (hitResult != null) {
 			if (hitResult.entity != null) {
-				hitResult.entity.fireHurt();
+				hitResult.entity.remainingFireTicks = 150;
 			}
 		}
 	}

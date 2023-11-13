@@ -44,7 +44,6 @@ public class EntityLaser extends Entity {
 	protected int laserType;
 	private static final List<Integer> collisionExclusionList = new ArrayList<>();
 	static {
-		collisionExclusionList.add(0);
 		collisionExclusionList.add(Block.glass.id);
 		collisionExclusionList.add(Block.trapdoorGlass.id);
 		collisionExclusionList.add(Block.ice.id);
@@ -419,7 +418,7 @@ public class EntityLaser extends Entity {
 		return 0.0F;
 	}
 
-	public HitResult checkBlockCollisionBetweenPointsWithBlacklist(Vec3d start, Vec3d end, boolean shouldCollideWithFluids, boolean shouldCollideWithNonSolids, List<Integer> collisionBlacklist) {
+	public HitResult checkBlockCollisionBetweenPointsWithBlacklist(Vec3d start, Vec3d end, boolean shouldCollideWithFluids, boolean shouldNotCollideWithNonSolids, List<Integer> collisionBlacklist) {
 		if (!Double.isNaN(start.xCoord) && !Double.isNaN(start.yCoord) && !Double.isNaN(start.zCoord)) {
 			if (!Double.isNaN(end.xCoord) && !Double.isNaN(end.yCoord) && !Double.isNaN(end.zCoord)) {
 				int blockEndX = MathHelper.floor_double(end.xCoord);
@@ -431,7 +430,7 @@ public class EntityLaser extends Entity {
 				int id = this.world.getBlockId(blockStartX, blockStartY, blockStartZ);
 				int meta = this.world.getBlockMetadata(blockStartX, blockStartY, blockStartZ);
 				Block block = Block.blocksList[id];
-				if ((!shouldCollideWithNonSolids || block == null || block.getCollisionBoundingBoxFromPool(this.world, blockStartX, blockStartY, blockStartZ) != null) && id > 0 && !collisionBlacklist.contains(id) && (block != null && block.canCollideCheck(meta, shouldCollideWithFluids))) {
+				if ((!shouldNotCollideWithNonSolids || block == null || block.getCollisionBoundingBoxFromPool(this.world, blockStartX, blockStartY, blockStartZ) != null) && id > 0 && !collisionBlacklist.contains(id) && (block != null && block.canCollideCheck(meta, shouldCollideWithFluids))) {
 					HitResult movingobjectposition = block.collisionRayTrace(this.world, blockStartX, blockStartY, blockStartZ, start, end);
 					if (movingobjectposition != null) {
 						return movingobjectposition;
@@ -552,7 +551,7 @@ public class EntityLaser extends Entity {
 					int id2 = this.world.getBlockId(blockStartX, blockStartY, blockStartZ);
 					int meta2 = this.world.getBlockMetadata(blockStartX, blockStartY, blockStartZ);
 					Block block1 = Block.blocksList[id2];
-					if ((!shouldCollideWithNonSolids || block1 == null || block1.getCollisionBoundingBoxFromPool(this.world, blockStartX, blockStartY, blockStartZ) != null) && id2 > 0 && !collisionBlacklist.contains(id2) && (block1 != null && block1.canCollideCheck(meta2, shouldCollideWithFluids))) {
+					if ((!shouldNotCollideWithNonSolids || block1 == null || block1.getCollisionBoundingBoxFromPool(this.world, blockStartX, blockStartY, blockStartZ) != null) && id2 > 0 && !collisionBlacklist.contains(id2) && (block1 != null && block1.canCollideCheck(meta2, shouldCollideWithFluids))) {
 						HitResult movingobjectposition1 = block1.collisionRayTrace(this.world, blockStartX, blockStartY, blockStartZ, start, end);
 						if (movingobjectposition1 != null) {
 							return movingobjectposition1;
