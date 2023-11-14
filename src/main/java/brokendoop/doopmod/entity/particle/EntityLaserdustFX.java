@@ -11,7 +11,7 @@ public class EntityLaserdustFX extends EntityFX {
 		this(world, x, y, z, 0, 0, 0, red, green, blue, 1.0F);
 	}
 
-	public EntityLaserdustFX(World world, double x, double y, double z, double motionX, double motionY, double motionZ, double red, double green, double blue, double scale) {
+	public EntityLaserdustFX(World world, double x, double y, double z, double motionX, double motionY, double motionZ, double red, double green, double blue, float scale) {
 		super(world, x, y, z, 0.0, 0.0, 0.0);
 		this.xd *= 0.1;
 		this.yd *= 0.1;

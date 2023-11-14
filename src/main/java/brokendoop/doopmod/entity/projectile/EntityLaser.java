@@ -173,8 +173,6 @@ public class EntityLaser extends Entity {
 		Vec3d oldPos = Vec3d.createVector(this.x, this.y, this.z);
 		Vec3d newPos = Vec3d.createVector(this.x + this.xd, this.y + this.yd, this.z + this.zd);
 		hitResult = checkBlockCollisionBetweenPointsWithBlacklist(oldPos, newPos, false, true, collisionExclusionList);
-		oldPos = Vec3d.createVector(this.x, this.y, this.z);
-		newPos = Vec3d.createVector(this.x + this.xd, this.y + this.yd, this.z + this.zd);
 		if (hitResult != null) {
 			newPos = Vec3d.createVector(hitResult.location.xCoord, hitResult.location.yCoord, hitResult.location.zCoord);
 		}

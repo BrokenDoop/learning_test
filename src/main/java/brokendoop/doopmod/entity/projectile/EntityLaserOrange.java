@@ -49,9 +49,9 @@ public class EntityLaserOrange extends EntityLaser{
 		double pOffsetX = this.x - this.xd;
 		double pOffsetY = this.y - this.yd;
 		double pOffsetZ = this.z - this.zd;
-		this.world.spawnParticle("laserdust", pOffsetX, pOffsetY, pOffsetZ, 0.9, 0.5 , 0.1);
+		this.world.spawnParticle("laserdust", pOffsetX, pOffsetY, pOffsetZ, 0.9, ((float)Math.random() * 0.3F + 0.9F) * 0.45 , 0);
 		if (this.removed) {
-			createSphericalParticles(0.25, 8, 0.9, 0.5, 0.1);
+			createSphericalParticles(0.25, 8, 0.9, ((float)Math.random() * 0.3F + 0.9F) * 0.45, 0);
 		}
 
 		// Burn Entity on hit
