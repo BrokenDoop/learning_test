@@ -4,7 +4,6 @@ import net.minecraft.core.HitResult;
 import net.minecraft.core.block.Block;
 import net.minecraft.core.block.material.Material;
 import net.minecraft.core.entity.EntityLiving;
-import net.minecraft.core.util.phys.Vec3d;
 import net.minecraft.core.world.World;
 
 public class EntityLaserOrange extends EntityLaser{
@@ -29,23 +28,23 @@ public class EntityLaserOrange extends EntityLaser{
 		this.laserDamage = 0;
 		this.laserFireDamage = 4;
 	}
-	public void tick(){
-		// Check for water collision
-		Vec3d oldPos = Vec3d.createVector(this.x, this.y, this.z);
-		Vec3d newPos = Vec3d.createVector(this.x + this.xd, this.y + this.yd, this.z + this.zd);
-		HitResult waterHit = this.world.checkBlockCollisionBetweenPoints(oldPos, newPos, true, false);
-		if (waterHit != null && waterHit.hitType == HitResult.HitType.TILE){
-			Block block = world.getBlock(waterHit.x, waterHit.y, waterHit.z);
+	@Override
+	public void beforeBounces(){
+		if(hitResult != null && hitResult.hitType == HitResult.HitType.TILE) {
+			Block block = world.getBlock(this.xTile, this.yTile, this.zTile);
 			if (block.blockMaterial == Material.water || block.blockMaterial == Material.ice) {
-				this.remove();
-				this.world.playSoundAtEntity(this, "random.fizz", 1F, 2.6F + (random.nextFloat() - random.nextFloat()) * 0.8F);
-				createSphericalParticles(0.25, 8, 0.9, 0.5, 0.1);
-				return;
+				this.hitSound = "random.fizz";
+				this.hitSoundPitch = 2.6F + (random.nextFloat() - random.nextFloat()) * 0.8F;
 			}
 		}
-
+	}
+	public void tick(){
+		collisionExclusionList.add(Block.fluidLavaStill.id);
+		collisionExclusionList.add(Block.fluidLavaFlowing.id);
+		collisionExclusionList.remove(15);
 		// Normal Laser tick
 		super.tick();
+		this.collideWithWater = true;
 		double pOffsetX = this.x - this.xd;
 		double pOffsetY = this.y - this.yd;
 		double pOffsetZ = this.z - this.zd;
@@ -54,7 +53,6 @@ public class EntityLaserOrange extends EntityLaser{
 			createSphericalParticles(0.25, 8, 0.9, ((float)Math.random() * 0.3F + 0.9F) * 0.45, 0);
 		}
 
-		// Burn Entity on hit
 		if (hitResult != null) {
 			if (hitResult.entity != null) {
 				hitResult.entity.remainingFireTicks = 150;

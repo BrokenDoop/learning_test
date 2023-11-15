@@ -6,6 +6,7 @@ import com.mojang.nbt.CompoundTag;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.HitResult;
 import net.minecraft.core.block.Block;
+import net.minecraft.core.block.BlockFluid;
 import net.minecraft.core.entity.Entity;
 import net.minecraft.core.entity.EntityLiving;
 import net.minecraft.core.entity.fx.EntityFX;
@@ -34,6 +35,9 @@ public class EntityLaser extends Entity {
 	public EntityLiving owner;
 	protected int ticksInAir;
 	protected int ticksSoundDelay;
+	protected String hitSound = "doopmod.laser.hit";
+	protected float hitSoundPitch = 1F / (this.random.nextFloat() * 0.2F + 0.9F); // <
+	protected boolean collideWithWater = false; // ^^ these 3 variables are used for when the orange laser hits water/ice.
 	protected double laserSpeed;
 	protected float laserBounce;
 	protected float laserPierce;
@@ -42,11 +46,10 @@ public class EntityLaser extends Entity {
 	protected int laserDamage;
 	protected int laserFireDamage;
 	protected int laserType;
-	private static final List<Integer> collisionExclusionList = new ArrayList<>();
-	static {
+	protected List<Integer> collisionExclusionList = new ArrayList<>();
+	{
 		collisionExclusionList.add(Block.glass.id);
 		collisionExclusionList.add(Block.trapdoorGlass.id);
-		collisionExclusionList.add(Block.ice.id);
 		collisionExclusionList.add(Block.mesh.id);
 		collisionExclusionList.add(Block.fenceChainlink.id);
 		collisionExclusionList.add(Block.lanternFireflyBlue.id);
@@ -60,6 +63,7 @@ public class EntityLaser extends Entity {
 		collisionExclusionList.add(Block.leavesEucalyptus.id);
 		collisionExclusionList.add(Block.leavesCherryFlowering.id);
 		collisionExclusionList.add(Block.leavesShrub.id);
+		collisionExclusionList.add(Block.ice.id);
 	}
 	public EntityLaser(World world) {
 		this(world, 0);
@@ -172,7 +176,7 @@ public class EntityLaser extends Entity {
 		++this.ticksInAir;
 		Vec3d oldPos = Vec3d.createVector(this.x, this.y, this.z);
 		Vec3d newPos = Vec3d.createVector(this.x + this.xd, this.y + this.yd, this.z + this.zd);
-		hitResult = checkBlockCollisionBetweenPointsWithBlacklist(oldPos, newPos, false, true, collisionExclusionList);
+		hitResult = checkBlockCollisionBetweenPointsWithBlacklist(oldPos, newPos, this.collideWithWater, false, collisionExclusionList);
 		if (hitResult != null) {
 			newPos = Vec3d.createVector(hitResult.location.xCoord, hitResult.location.yCoord, hitResult.location.zCoord);
 		}
@@ -272,7 +276,7 @@ public class EntityLaser extends Entity {
 				this.ticksSoundDelay = 0;
 			}
 		}
-
+		beforeBounces();
 		calculateBounces();
 		this.yd -= this.laserGravity;
 		this.setPos(this.x, this.y, this.z);
@@ -287,9 +291,8 @@ public class EntityLaser extends Entity {
 			}
 		}
 	}
-
-	//This voodoo witchcraft shit is essentially me pouring chemical X onto useless's code
-	private void calculateBounces(){
+	public void beforeBounces(){} //used to calculate things before bounces, used for orange laser
+	private void calculateBounces(){ //This voodoo witchcraft shit is essentially me pouring chemical X onto useless's code
 		if (xTile == xTileOld && yTile == yTileOld && zTile == zTileOld) return; // Don't bounce if block hit is the same as the previous block
 		if (hitResult == null) return; // Don't bounce if ray-cast result is null
 		Side sideHit = hitResult.side;
@@ -350,10 +353,10 @@ public class EntityLaser extends Entity {
 		//play stupid sound
 		if (laserBounce > 0) { // If bounces available
 			setLaserHeading(deltaX, deltaY, deltaZ, 1.5f, 1f);
-			this.world.playSoundAtEntity(this, "doopmod.laser.bounce", 1.0F, 1F / (this.random.nextFloat() * 0.2F + 0.9F));
+			this.world.playSoundAtEntity(this, "doopmod.laser.bounce", 1F, 1F / (this.random.nextFloat() * 0.2F + 0.9F));
 			laserBounce--;
 		} else {
-			this.world.playSoundAtEntity(this, "doopmod.laser.hit", 1.0F, 1F / (this.random.nextFloat() * 0.2F + 0.9F));
+			this.world.playSoundAtEntity(this, this.hitSound, 1F, this.hitSoundPitch);
 			this.remove();
 		}
 	}
@@ -416,7 +419,7 @@ public class EntityLaser extends Entity {
 		return 0.0F;
 	}
 
-	public HitResult checkBlockCollisionBetweenPointsWithBlacklist(Vec3d start, Vec3d end, boolean shouldCollideWithFluids, boolean shouldNotCollideWithNonSolids, List<Integer> collisionBlacklist) {
+	public HitResult checkBlockCollisionBetweenPointsWithBlacklist(Vec3d start, Vec3d end, boolean shouldCollideWithFluids, boolean shouldCollideWithNonSolids, List<Integer> collisionBlacklist) {
 		if (!Double.isNaN(start.xCoord) && !Double.isNaN(start.yCoord) && !Double.isNaN(start.zCoord)) {
 			if (!Double.isNaN(end.xCoord) && !Double.isNaN(end.yCoord) && !Double.isNaN(end.zCoord)) {
 				int blockEndX = MathHelper.floor_double(end.xCoord);
@@ -428,7 +431,7 @@ public class EntityLaser extends Entity {
 				int id = this.world.getBlockId(blockStartX, blockStartY, blockStartZ);
 				int meta = this.world.getBlockMetadata(blockStartX, blockStartY, blockStartZ);
 				Block block = Block.blocksList[id];
-				if ((!shouldNotCollideWithNonSolids || block == null || block.getCollisionBoundingBoxFromPool(this.world, blockStartX, blockStartY, blockStartZ) != null) && id > 0 && !collisionBlacklist.contains(id) && (block != null && block.canCollideCheck(meta, shouldCollideWithFluids))) {
+				if ((shouldCollideWithNonSolids || (block instanceof BlockFluid) || block == null || block.getCollisionBoundingBoxFromPool(this.world, blockStartX, blockStartY, blockStartZ) != null) && id > 0 && !collisionBlacklist.contains(id) && (block != null && block.canCollideCheck(meta, shouldCollideWithFluids))) {
 					HitResult movingobjectposition = block.collisionRayTrace(this.world, blockStartX, blockStartY, blockStartZ, start, end);
 					if (movingobjectposition != null) {
 						return movingobjectposition;
@@ -549,7 +552,7 @@ public class EntityLaser extends Entity {
 					int id2 = this.world.getBlockId(blockStartX, blockStartY, blockStartZ);
 					int meta2 = this.world.getBlockMetadata(blockStartX, blockStartY, blockStartZ);
 					Block block1 = Block.blocksList[id2];
-					if ((!shouldNotCollideWithNonSolids || block1 == null || block1.getCollisionBoundingBoxFromPool(this.world, blockStartX, blockStartY, blockStartZ) != null) && id2 > 0 && !collisionBlacklist.contains(id2) && (block1 != null && block1.canCollideCheck(meta2, shouldCollideWithFluids))) {
+					if ((shouldCollideWithNonSolids || (block1 instanceof BlockFluid) || block1 == null || block1.getCollisionBoundingBoxFromPool(this.world, blockStartX, blockStartY, blockStartZ) != null) && id2 > 0 && !collisionBlacklist.contains(id2) && (block1 != null && block1.canCollideCheck(meta2, shouldCollideWithFluids))) {
 						HitResult movingobjectposition1 = block1.collisionRayTrace(this.world, blockStartX, blockStartY, blockStartZ, start, end);
 						if (movingobjectposition1 != null) {
 							return movingobjectposition1;
