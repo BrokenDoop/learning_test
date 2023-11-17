@@ -1,6 +1,5 @@
 package brokendoop.doopmod.entity.projectile;
 
-import net.minecraft.core.HitResult;
 import net.minecraft.core.block.Block;
 import net.minecraft.core.block.material.Material;
 import net.minecraft.core.entity.EntityLiving;
@@ -30,12 +29,11 @@ public class EntityLaserOrange extends EntityLaser{
 	}
 	@Override
 	public void beforeBounces(){
-		if(hitResult != null && hitResult.hitType == HitResult.HitType.TILE) {
-			Block block = world.getBlock(this.xTile, this.yTile, this.zTile);
-			if (block.blockMaterial == Material.water || block.blockMaterial == Material.ice) {
-				this.hitSound = "random.fizz";
-				this.hitSoundPitch = 2.6F + (random.nextFloat() - random.nextFloat()) * 0.8F;
-			}
+		Block block = world.getBlock(this.xTile, this.yTile, this.zTile);
+		if (block != null && (block.blockMaterial == Material.water || block.blockMaterial == Material.ice)) {
+			createSphericalParticles(0.5, 24, 1, 0, 0);
+			this.hitSound = "random.fizz";
+			this.hitSoundPitch = 2.6F + (random.nextFloat() - random.nextFloat()) * 0.8F;
 		}
 	}
 	public void tick(){
