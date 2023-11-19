@@ -1,12 +1,9 @@
 package brokendoop.doopmod.mixin;
 
-import brokendoop.doopmod.DoopMod;
-import brokendoop.doopmod.util.IEntityLivingHurtFramesDelay;
 import brokendoop.doopmod.util.IEntityPlayerHurtFramesDelay;
 import net.minecraft.core.achievement.stat.StatBase;
 import net.minecraft.core.achievement.stat.StatList;
 import net.minecraft.core.entity.Entity;
-import net.minecraft.core.entity.EntityLiving;
 import net.minecraft.core.entity.monster.EntityMonster;
 import net.minecraft.core.entity.player.EntityPlayer;
 import net.minecraft.core.entity.projectile.EntityArrow;
@@ -16,12 +13,6 @@ import net.minecraft.core.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 @Mixin(value = EntityPlayer.class, remap = false)
 public abstract class EntityPlayerMixin extends EntityLivingMixin implements IEntityPlayerHurtFramesDelay {

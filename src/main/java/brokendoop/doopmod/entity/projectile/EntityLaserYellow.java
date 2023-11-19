@@ -26,6 +26,10 @@ public class EntityLaserYellow extends EntityLaser{
 		this.laserDamage = 1;
 		this.laserFireDamage = 2;
 	}
+	@Override
+	public void beforeBounces(){
+		this.isHurtHFTDelay = 1;
+	}
 	public void tick() {
 		super.tick();
 		double pOffsetX = this.x - this.xd;

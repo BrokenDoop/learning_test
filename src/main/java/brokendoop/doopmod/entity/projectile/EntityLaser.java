@@ -36,6 +36,7 @@ public class EntityLaser extends Entity {
 	public EntityLiving owner;
 	protected int ticksInAir;
 	protected int ticksSoundDelay;
+	protected int isHurtHFTDelay = 0;
 	protected String hitSound = "doopmod.laser.hit";
 	protected float hitSoundPitch = 1F / (this.random.nextFloat() * 0.2F + 0.9F); // <
 	protected boolean collideWithWater = false; // ^^ these 3 variables are used for when the orange laser hits water/ice.
@@ -110,7 +111,7 @@ public class EntityLaser extends Entity {
 		this.laserBounce = 0;
 		this.laserPierce = 3;
 		this.laserSpread = 3;
-		this.laserSpeed = 0.03F;
+		this.laserSpeed = 1.2F;
 		this.laserGravity = 0F;
 		this.laserDamage = 3;
 		this.laserFireDamage = 4;
@@ -210,7 +211,7 @@ public class EntityLaser extends Entity {
 				if (entity instanceof EntityLiving) {
 					IEntityHurtFramesDelay delayedEntity = (IEntityHurtFramesDelay) entity;
 					if (delayedEntity.hurtWithDelay(this.owner, this.laserDamage, DamageType.COMBAT, false, 0)) {
-						delayedEntity.hurtWithDelay(this.owner, this.laserFireDamage, DamageType.FIRE, true, 0);
+						delayedEntity.hurtWithDelay(this.owner, this.laserFireDamage, DamageType.FIRE, true, this.isHurtHFTDelay);
 						if (laserPierce > 0) {
 							this.world.playSoundAtEntity(this, "doopmod.laser.pierce", 1.0F, 1F / (this.random.nextFloat() * 0.2F + 0.9F));
 							laserPierce--;

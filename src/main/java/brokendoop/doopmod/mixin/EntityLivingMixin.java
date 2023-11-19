@@ -1,8 +1,6 @@
 package brokendoop.doopmod.mixin;
 
-import brokendoop.doopmod.DoopMod;
 import brokendoop.doopmod.util.IEntityHurtFramesDelay;
-import brokendoop.doopmod.util.IEntityLivingHurtFramesDelay;
 import com.mojang.nbt.CompoundTag;
 import net.minecraft.core.entity.Entity;
 import net.minecraft.core.entity.EntityLiving;
@@ -56,8 +54,6 @@ public class EntityLivingMixin extends Entity implements IEntityHurtFramesDelay 
 	@Unique
 	public int ticksHFTDelay;
 	@Unique
-	public int isHFTDelay;
-	@Unique
 	public Boolean doHeartsFlashTime = false;
 
 	public EntityLivingMixin(World world) { super(world); }
@@ -98,9 +94,13 @@ public class EntityLivingMixin extends Entity implements IEntityHurtFramesDelay 
 					this.prevHealth = this.health;
 					this.damageEntity(damage, type);
 					if (doHurtHeartsFlashTime) {
-						this.doHeartsFlashTime = true;
-						this.isHFTDelay = isHFTDelay;
-						this.ticksHFTDelay = this.isHFTDelay;
+						if (isHFTDelay > 0) {
+							this.doHeartsFlashTime = true;
+							this.ticksHFTDelay = isHFTDelay;
+						} else {
+							this.heartsFlashTime = this.heartsHalvesLife;
+							this.hurtTime = this.maxHurtTime = 10;
+						}
 					}
 				}
 
@@ -127,9 +127,7 @@ public class EntityLivingMixin extends Entity implements IEntityHurtFramesDelay 
 				if (this.health <= 0) {
 					if (flag) {
 						this.world
-							.playSoundAtEntity(
-								this, this.getDeathSound(), this.getSoundVolume(), (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F
-							);
+							.playSoundAtEntity(this, this.getDeathSound(), this.getSoundVolume(), (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
 					}
 
 					this.onDeath(entity);
