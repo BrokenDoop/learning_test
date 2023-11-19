@@ -2,6 +2,7 @@ package brokendoop.doopmod.entity.projectile;
 
 
 import brokendoop.doopmod.entity.particle.EntityLaserdustFX;
+import brokendoop.doopmod.util.IEntityHurtFramesDelay;
 import com.mojang.nbt.CompoundTag;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.HitResult;
@@ -206,11 +207,22 @@ public class EntityLaser extends Entity {
 
 		if (hitResult != null) {
 			if (hitResult.entity != null) {
-				if (hitResult.entity.hurt(this.owner, this.laserDamage, DamageType.COMBAT)) {
-					if (entity instanceof EntityLiving) {
-						entity.heartsFlashTime = 0;
+				if (entity instanceof EntityLiving) {
+					IEntityHurtFramesDelay delayedEntity = (IEntityHurtFramesDelay) entity;
+					if (delayedEntity.hurtWithDelay(this.owner, this.laserDamage, DamageType.COMBAT, false, 0)) {
+						delayedEntity.hurtWithDelay(this.owner, this.laserFireDamage, DamageType.FIRE, true, 1);
+						if (laserPierce > 0) {
+							this.world.playSoundAtEntity(this, "doopmod.laser.pierce", 1.0F, 1F / (this.random.nextFloat() * 0.2F + 0.9F));
+							laserPierce--;
+						} else {
+							this.remove();
+							this.world.playSoundAtEntity(this, "doopmod.laser.hit", 1.0F, 1F / (this.random.nextFloat() * 0.2F + 0.9F));
+						}
 					}
-					hitResult.entity.hurt(this.owner, this.laserFireDamage, DamageType.FIRE);
+				} else {
+					int combinedDamage = this.laserDamage + this.laserFireDamage;
+					hitResult.entity.hurt(this.owner, combinedDamage, DamageType.COMBAT);
+					createSphericalParticles(0.5, 32, 0, 1, 0);
 					if (laserPierce > 0) {
 						this.world.playSoundAtEntity(this, "doopmod.laser.pierce", 1.0F, 1F / (this.random.nextFloat() * 0.2F + 0.9F));
 						laserPierce--;
@@ -219,6 +231,7 @@ public class EntityLaser extends Entity {
 						this.world.playSoundAtEntity(this, "doopmod.laser.hit", 1.0F, 1F / (this.random.nextFloat() * 0.2F + 0.9F));
 					}
 				}
+
 			} else {
 				this.xTile = hitResult.x;
 				this.yTile = hitResult.y;
@@ -350,7 +363,7 @@ public class EntityLaser extends Entity {
 		this.y = yTile + relY + deltaY * 0.05;
 		this.z = zTile + relZ + deltaZ * 0.05;
 
-		//play stupid sound
+
 		if (laserBounce > 0) { // If bounces available
 			setLaserHeading(deltaX, deltaY, deltaZ, 1.5f, 1f);
 			this.world.playSoundAtEntity(this, "doopmod.laser.bounce", 1F, 1F / (this.random.nextFloat() * 0.2F + 0.9F));
