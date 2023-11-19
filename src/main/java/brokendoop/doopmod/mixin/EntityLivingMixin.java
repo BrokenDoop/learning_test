@@ -1,7 +1,7 @@
 package brokendoop.doopmod.mixin;
 
 import brokendoop.doopmod.util.IEntityHurtFramesDelay;
-import brokendoop.doopmod.util.IEntityLivingHurtFramesDelayed;
+import brokendoop.doopmod.util.IEntityLivingHurtFramesDelay;
 import com.mojang.nbt.CompoundTag;
 import net.minecraft.core.entity.Entity;
 import net.minecraft.core.entity.EntityLiving;
@@ -15,8 +15,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = EntityLiving.class, remap = false)
-public class EntityLivingMixin extends Entity implements IEntityLivingHurtFramesDelayed, IEntityHurtFramesDelay {
-	public EntityLivingMixin(World world) { super(world); }
+public class EntityLivingMixin extends Entity implements IEntityLivingHurtFramesDelay, IEntityHurtFramesDelay {
 	@Shadow
 	public int heartsHalvesLife;
 	@Shadow
@@ -55,14 +54,28 @@ public class EntityLivingMixin extends Entity implements IEntityLivingHurtFrames
     }
 	@Unique
 	public int ticksHFTDelay;
+	@Unique
+	public int isHFTDelay;
+	@Unique
+	public Boolean doHeartsFlashTime = false;
 
-	@Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/entity/Entity;tick()V", ordinal = 0, shift = At.Shift.AFTER))
+	public EntityLivingMixin(World world) { super(world); }
+
+	@Inject(method = "baseTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/entity/Entity;baseTick()V", ordinal = 0, shift = At.Shift.AFTER))
 	private void ticksHFTDelay(CallbackInfo ci) {
-		++this.ticksHFTDelay;
+		if (this.doHeartsFlashTime && (this.ticksHFTDelay > 0)) {
+			--this.ticksHFTDelay;
+		}
+		if (this.doHeartsFlashTime && (this.ticksHFTDelay <= 0)) {
+			this.heartsFlashTime = this.heartsHalvesLife;
+			this.hurtTime = this.maxHurtTime = 10;
+			this.doHeartsFlashTime = false;
+
+		}
 	}
 
 	@Override
-	public boolean hurtWithDelay(Entity entity, int damage, DamageType type, Boolean doHeartsFlashTime, int invulnDelay) {
+	public boolean hurtWithDelay(Entity entity, int damage, DamageType type, Boolean doHurtHeartsFlashTime, int isHFTDelay) {
 		if (this.world.isClientSide) {
 			return false;
 		} else {
@@ -76,7 +89,6 @@ public class EntityLivingMixin extends Entity implements IEntityLivingHurtFrames
 					if (damage <= this.lastDamage) {
 						return false;
 					}
-
 					this.damageEntity(damage - this.lastDamage, type);
 					this.lastDamage = damage;
 					flag = false;
@@ -84,9 +96,10 @@ public class EntityLivingMixin extends Entity implements IEntityLivingHurtFrames
 					this.lastDamage = damage;
 					this.prevHealth = this.health;
 					this.damageEntity(damage, type);
-					if (doHeartsFlashTime) { //this is the part that needs to be delayed.
-						this.heartsFlashTime = this.heartsHalvesLife;
-						this.hurtTime = this.maxHurtTime = 10;
+					if (doHurtHeartsFlashTime) {
+						this.doHeartsFlashTime = true;
+						this.isHFTDelay = isHFTDelay;
+						this.ticksHFTDelay = this.isHFTDelay;
 					}
 				}
 

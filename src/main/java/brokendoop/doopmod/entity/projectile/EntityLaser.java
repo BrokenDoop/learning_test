@@ -110,7 +110,7 @@ public class EntityLaser extends Entity {
 		this.laserBounce = 0;
 		this.laserPierce = 3;
 		this.laserSpread = 3;
-		this.laserSpeed = 1.2F;
+		this.laserSpeed = 0.03F;
 		this.laserGravity = 0F;
 		this.laserDamage = 3;
 		this.laserFireDamage = 4;
@@ -210,7 +210,7 @@ public class EntityLaser extends Entity {
 				if (entity instanceof EntityLiving) {
 					IEntityHurtFramesDelay delayedEntity = (IEntityHurtFramesDelay) entity;
 					if (delayedEntity.hurtWithDelay(this.owner, this.laserDamage, DamageType.COMBAT, false, 0)) {
-						delayedEntity.hurtWithDelay(this.owner, this.laserFireDamage, DamageType.FIRE, true, 1);
+						delayedEntity.hurtWithDelay(this.owner, this.laserFireDamage, DamageType.FIRE, true, 0);
 						if (laserPierce > 0) {
 							this.world.playSoundAtEntity(this, "doopmod.laser.pierce", 1.0F, 1F / (this.random.nextFloat() * 0.2F + 0.9F));
 							laserPierce--;
@@ -222,7 +222,6 @@ public class EntityLaser extends Entity {
 				} else {
 					int combinedDamage = this.laserDamage + this.laserFireDamage;
 					hitResult.entity.hurt(this.owner, combinedDamage, DamageType.COMBAT);
-					createSphericalParticles(0.5, 32, 0, 1, 0);
 					if (laserPierce > 0) {
 						this.world.playSoundAtEntity(this, "doopmod.laser.pierce", 1.0F, 1F / (this.random.nextFloat() * 0.2F + 0.9F));
 						laserPierce--;
