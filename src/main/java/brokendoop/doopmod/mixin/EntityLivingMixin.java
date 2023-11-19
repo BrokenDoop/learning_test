@@ -1,5 +1,6 @@
 package brokendoop.doopmod.mixin;
 
+import brokendoop.doopmod.DoopMod;
 import brokendoop.doopmod.util.IEntityHurtFramesDelay;
 import brokendoop.doopmod.util.IEntityLivingHurtFramesDelay;
 import com.mojang.nbt.CompoundTag;
@@ -15,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = EntityLiving.class, remap = false)
-public class EntityLivingMixin extends Entity implements IEntityLivingHurtFramesDelay, IEntityHurtFramesDelay {
+public class EntityLivingMixin extends Entity implements IEntityHurtFramesDelay {
 	@Shadow
 	public int heartsHalvesLife;
 	@Shadow
