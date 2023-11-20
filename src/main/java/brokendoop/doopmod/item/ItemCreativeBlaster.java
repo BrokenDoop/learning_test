@@ -39,7 +39,7 @@ public class ItemCreativeBlaster extends Item {
 			laserToFire = new  EntityLaserYellow(world, entityplayer, true);
 
 
-			double spreadAmount = 0.2;
+			double spreadAmount = 0.075;
 
 			//Spread vector math
 			Vec3d lookDir = entityplayer.getLookAngle();

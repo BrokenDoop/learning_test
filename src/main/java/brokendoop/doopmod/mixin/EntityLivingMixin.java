@@ -67,10 +67,9 @@ public class EntityLivingMixin extends Entity implements IEntityHurtFramesDelay 
 			this.heartsFlashTime = this.heartsHalvesLife;
 			this.hurtTime = this.maxHurtTime = 10;
 			this.doHeartsFlashTime = false;
-
 		}
 	}
-
+	//currently if you hit something before the delay ends it will reset the delay. I might actually want it to work this way.
 	@Override
 	public boolean hurtWithDelay(Entity entity, int damage, DamageType type, Boolean doHurtHeartsFlashTime, int isHFTDelay) {
 		if (this.world.isClientSide) {

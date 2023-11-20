@@ -4,6 +4,7 @@ import brokendoop.doopmod.util.IEntityPlayerHurtFramesDelay;
 import net.minecraft.core.achievement.stat.StatBase;
 import net.minecraft.core.achievement.stat.StatList;
 import net.minecraft.core.entity.Entity;
+import net.minecraft.core.entity.EntityLiving;
 import net.minecraft.core.entity.monster.EntityMonster;
 import net.minecraft.core.entity.player.EntityPlayer;
 import net.minecraft.core.entity.projectile.EntityArrow;
@@ -22,9 +23,10 @@ public abstract class EntityPlayerMixin extends EntityLivingMixin implements IEn
 	public void wakeUpPlayer(boolean flag, boolean flag1){}
 	@Shadow
 	public void addStat(StatBase statbase, int i){}
-
 	@Shadow
 	public abstract boolean isPlayerSleeping();
+	@Shadow
+	protected void alertWolves(EntityLiving entityliving, boolean flag){}
 
 	public EntityPlayerMixin(World world) { super(world); }
 	@Override
@@ -52,10 +54,9 @@ public abstract class EntityPlayerMixin extends EntityLivingMixin implements IEn
 					damage = damage * 3 / 2;
 				}
 			}
-
+			//apparently this doesn't anger wolves, so I need to re-add that code from the original method. (nvm its part of EntityWolf)
 			this.addStat(StatList.damageTakenStat, damage);
-
-			return super.hurtWithDelay(entity, damage, type, doHurtHeartsFlashTime, isHFTDelay); //<- after adding this it crashes, it's needed tho :(
+			return super.hurtWithDelay(entity, damage, type, doHurtHeartsFlashTime, isHFTDelay);
 		}
 	}
 }

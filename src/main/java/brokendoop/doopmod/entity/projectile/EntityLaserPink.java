@@ -23,7 +23,7 @@ public class EntityLaserPink extends EntityLaser{
 		this.laserSpeed = 2.2F;
 		this.laserGravity = 0F;
 		this.laserDamage = 3;
-		this.laserFireDamage = 3;
+		this.laserFireDamage = 4;
 	}
 	public void tick() {
 		super.tick();

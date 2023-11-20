@@ -23,8 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EntityLaser extends Entity {
-	//your shits all fucked, fix it, need to fix this entirely.
-	//Need to fix collisions entirely, they are FUCKED!
+	//the collision method needs to be fixed, it has a 50/50 chance of actually hitting an entity for some reason.
+	//could also be how I'm calling the method or how I'm getting the entity.
 	protected int xTile;
 	protected int yTile;
 	protected int zTile;
@@ -102,7 +102,6 @@ public class EntityLaser extends Entity {
 			this.x - (MathHelper.cos((float)Math.toRadians(this.yRot)) * 0.16F),
 			this.y - 0.1,
 			this.z - (MathHelper.sin((float)Math.toRadians(this.yRot)) * 0.16F));
-
 		Vec3d lookDir = entityliving.getLookAngle();
 		this.setLaserHeading(lookDir.xCoord, lookDir.yCoord, lookDir.zCoord,1.5F, 1.0F);
 	}
@@ -179,6 +178,8 @@ public class EntityLaser extends Entity {
 		Vec3d oldPos = Vec3d.createVector(this.x, this.y, this.z);
 		Vec3d newPos = Vec3d.createVector(this.x + this.xd, this.y + this.yd, this.z + this.zd);
 		hitResult = checkBlockCollisionBetweenPointsWithBlacklist(oldPos, newPos, this.collideWithWater, false, collisionExclusionList);
+		oldPos = Vec3d.createVector(this.x, this.y, this.z);
+		newPos = Vec3d.createVector(this.x + this.xd, this.y + this.yd, this.z + this.zd);
 		if (hitResult != null) {
 			newPos = Vec3d.createVector(hitResult.location.xCoord, hitResult.location.yCoord, hitResult.location.zCoord);
 		}
@@ -208,7 +209,7 @@ public class EntityLaser extends Entity {
 
 		if (hitResult != null) {
 			if (hitResult.entity != null) {
-				if (entity instanceof EntityLiving) {
+				if (hitResult.entity instanceof EntityLiving) {
 					IEntityHurtFramesDelay delayedEntity = (IEntityHurtFramesDelay) entity;
 					if (delayedEntity.hurtWithDelay(this.owner, this.laserDamage, DamageType.COMBAT, false, 0)) {
 						delayedEntity.hurtWithDelay(this.owner, this.laserFireDamage, DamageType.FIRE, true, this.isHurtHFTDelay);

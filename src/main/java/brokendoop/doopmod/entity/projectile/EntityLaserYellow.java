@@ -20,23 +20,21 @@ public class EntityLaserYellow extends EntityLaser{
 	protected void init() {
 		this.laserBounce = 0;
 		this.laserPierce = 0;
-		this.laserSpread = 0;
+		this.laserSpread = 3;
 		this.laserSpeed = 1.2F;
 		this.laserGravity = 0F;
-		this.laserDamage = 1;
+		this.laserDamage = 2;
 		this.laserFireDamage = 2;
 	}
-	@Override
-	public void beforeBounces(){
-		this.isHurtHFTDelay = 1;
-	}
+
 	public void tick() {
+		this.isHurtHFTDelay = 1;
 		super.tick();
 		double pOffsetX = this.x - this.xd;
 		double pOffsetY = this.y - this.yd;
 		double pOffsetZ = this.z - this.zd;
 		this.world.spawnParticle("laserdust", pOffsetX, pOffsetY, pOffsetZ, 1, 1, 0);
-		if (this.ticksInAir == 13) {
+		if (this.ticksInAir == 37) {
 			this.world.playSoundAtEntity(this, "doopmod.laser.hit", 1.0F, 1F / (this.random.nextFloat() * 0.2F + 0.9F));
 			this.remove();
 		}

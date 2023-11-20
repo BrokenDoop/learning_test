@@ -31,7 +31,6 @@ public class EntityLaserOrange extends EntityLaser{
 	public void beforeBounces(){
 		Block block = world.getBlock(this.xTile, this.yTile, this.zTile);
 		if (block != null && (block.blockMaterial == Material.water || block.blockMaterial == Material.ice)) {
-			createSphericalParticles(0.5, 24, 1, 0, 0);
 			this.hitSound = "random.fizz";
 			this.hitSoundPitch = 2.6F + (random.nextFloat() - random.nextFloat()) * 0.8F;
 		}

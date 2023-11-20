@@ -21,7 +21,7 @@ public class EntityLaserBlack extends EntityLaser{
 		this.laserPierce = 0;
 		this.laserSpread = 6;
 		this.laserSpeed = 0.6F;
-		this.laserGravity = 0F;
+		this.laserGravity = 0.01F;
 		this.laserDamage = 4;
 		this.laserFireDamage = 5;
 	}
