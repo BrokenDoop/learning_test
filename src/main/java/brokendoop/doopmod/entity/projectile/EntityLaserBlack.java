@@ -36,7 +36,7 @@ public class EntityLaserBlack extends EntityLaser{
 			this.remove();
 		}
 		if (this.removed) {
-			createSphericalParticles(0.25, 8, 0.05, 0.05, 0.05);
+			createSphericalParticles(0.25, 8, 0.05, 0.05, 0.05, 1);
 		}
 	}
 }

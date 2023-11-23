@@ -32,7 +32,7 @@ public class EntityLaserPink extends EntityLaser{
 		double pOffsetZ = this.z - this.zd;
 		this.world.spawnParticle("laserdust", pOffsetX, pOffsetY, pOffsetZ, 1, 0.75, 0.75);
 		if (this.removed) {
-			createSphericalParticles(0.25, 8, 1, 0.75, 0.75);
+			createSphericalParticles(0.25, 8, 1, 0.75, 0.75, 1);
 		}
 	}
 }

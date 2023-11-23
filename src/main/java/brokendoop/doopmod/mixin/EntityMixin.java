@@ -15,7 +15,7 @@ public class EntityMixin implements IEntityHurtFramesDelay {
 		this.hurtMarkedDelay = true;
 	}
 	@Override
-	public boolean hurtWithDelay(Entity attacker, int baseDamage, DamageType type, Boolean doHurtHeartsFlashTime, int isHFTDelay) {
+	public boolean hurtWithDelay(Entity entity, int damage1, DamageType type1, int damage2, DamageType type2, Boolean doHurtHeartsFlashTime, int isHFTDelay) {
 		this.markHurtDelay();
 		return false;
 	}

@@ -71,7 +71,7 @@ public class EntityLivingMixin extends Entity implements IEntityHurtFramesDelay 
 	}
 	//currently if you hit something before the delay ends it will reset the delay. I might actually want it to work this way.
 	@Override
-	public boolean hurtWithDelay(Entity entity, int damage, DamageType type, Boolean doHurtHeartsFlashTime, int isHFTDelay) {
+	public boolean hurtWithDelay(Entity entity, int damage1, DamageType type1, int damage2, DamageType type2, Boolean doHurtHeartsFlashTime, int isHFTDelay) {
 		if (this.world.isClientSide) {
 			return false;
 		} else {
@@ -81,17 +81,20 @@ public class EntityLivingMixin extends Entity implements IEntityHurtFramesDelay 
 			} else {
 				this.limbYaw = 1.5F;
 				boolean flag = true;
+				int combinedDamage = damage1 + damage2;
 				if ((float)this.heartsFlashTime > (float)this.heartsHalvesLife / 2.0F) {
-					if (damage <= this.lastDamage) {
+					if (combinedDamage <= this.lastDamage) {
 						return false;
 					}
-					this.damageEntity(damage - this.lastDamage, type);
-					this.lastDamage = damage;
+					this.damageEntity(damage1 - this.lastDamage, type1);
+					this.damageEntity(damage2 - this.lastDamage, type2);
+					this.lastDamage = combinedDamage;
 					flag = false;
 				} else {
-					this.lastDamage = damage;
+					this.lastDamage = combinedDamage;
 					this.prevHealth = this.health;
-					this.damageEntity(damage, type);
+					this.damageEntity(damage1, type1);
+					this.damageEntity(damage2, type2);
 					if (doHurtHeartsFlashTime) {
 						if (isHFTDelay > 0) {
 							this.doHeartsFlashTime = true;
@@ -117,7 +120,7 @@ public class EntityLivingMixin extends Entity implements IEntityHurtFramesDelay 
 						}
 
 						this.attackedAtYaw = (float)(Math.atan2(d1, d) * 180.0 / (float) Math.PI) - this.yRot;
-						this.knockBack(entity, damage, d, d1);
+						this.knockBack(entity, combinedDamage, d, d1);
 					}
 
 					this.world.sendTrackedEntityStatusUpdatePacket(this, (byte)2, this.attackedAtYaw);

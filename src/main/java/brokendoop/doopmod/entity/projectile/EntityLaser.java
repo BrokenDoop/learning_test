@@ -11,6 +11,7 @@ import net.minecraft.core.block.BlockFluid;
 import net.minecraft.core.entity.Entity;
 import net.minecraft.core.entity.EntityLiving;
 import net.minecraft.core.entity.fx.EntityFX;
+import net.minecraft.core.entity.fx.EntitySmokeFX;
 import net.minecraft.core.entity.player.EntityPlayer;
 import net.minecraft.core.util.helper.DamageType;
 import net.minecraft.core.util.helper.MathHelper;
@@ -211,8 +212,7 @@ public class EntityLaser extends Entity {
 			if (hitResult.entity != null) {
 				if (hitResult.entity instanceof EntityLiving) {
 					IEntityHurtFramesDelay delayedEntity = (IEntityHurtFramesDelay) entity;
-					if (delayedEntity.hurtWithDelay(this.owner, this.laserDamage, DamageType.COMBAT, false, 0)) {
-						delayedEntity.hurtWithDelay(this.owner, this.laserFireDamage, DamageType.FIRE, true, this.isHurtHFTDelay);
+					if (delayedEntity.hurtWithDelay(this.owner, this.laserDamage, DamageType.COMBAT, this.laserFireDamage, DamageType.FIRE, true, this.isHurtHFTDelay)) {
 						if (laserPierce > 0) {
 							this.world.playSoundAtEntity(this, "doopmod.laser.pierce", 1.0F, 1F / (this.random.nextFloat() * 0.2F + 0.9F));
 							laserPierce--;
@@ -301,7 +301,7 @@ public class EntityLaser extends Entity {
 			double pOffsetZ = this.z - this.zd;
 			this.world.spawnParticle("laserdust", pOffsetX, pOffsetY, pOffsetZ, 0.9, 0 , 0);
 			if (this.removed) {
-				createSphericalParticles(0.25, 8, 0.9, 0, 0);
+				createSphericalParticles(0.25, 8, 0.9, 0, 0, 1);
 			}
 		}
 	}
@@ -374,9 +374,12 @@ public class EntityLaser extends Entity {
 			this.remove();
 		}
 	}
+	public void createSphericalParticles(double radius, int numParticles, double red, double green, double blue, float scale) {
+		createSphericalParticles(radius, numParticles, red, green, blue, scale, 0);
+	}
 
 	//this is used to create particles in a radius around the removal/death point of the projectile
-	public void createSphericalParticles(double radius, int numParticles, double red, double green, double blue) {
+	public void createSphericalParticles(double radius, int numParticles, double red, double green, double blue, float scale, int particleChoice) {
 		for (int i = 0; i < numParticles; i++) {
 			double theta = 2 * Math.PI * Math.random();
 			double phi = Math.acos(2 * Math.random() - 1);
@@ -395,7 +398,15 @@ public class EntityLaser extends Entity {
 			double pOffsetX = this.x - this.xd * 0.1;
 			double pOffsetY = this.y - this.yd * 0.1;
 			double pOffsetZ = this.z - this.zd * 0.1;
-			spawnParticle(new EntityLaserdustFX(world, pOffsetX, pOffsetY, pOffsetZ, velocityX, velocityY, velocityZ, red, green, blue, 1));
+
+			if (particleChoice == 0 || particleChoice == 1 || particleChoice == 2) {
+				if (particleChoice == 0 || particleChoice == 2) {
+					spawnParticle(new EntityLaserdustFX(world, pOffsetX, pOffsetY, pOffsetZ, velocityX, velocityY, velocityZ, red, green, blue, scale));
+				}
+				if (particleChoice == 1 || particleChoice == 2) {
+					spawnParticle(new EntitySmokeFX(world, pOffsetX, pOffsetY, pOffsetZ, velocityX, velocityY, velocityZ, scale));
+				}
+			}
 		}
 	}
 

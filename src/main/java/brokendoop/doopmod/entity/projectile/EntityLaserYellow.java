@@ -1,5 +1,6 @@
 package brokendoop.doopmod.entity.projectile;
 
+import brokendoop.doopmod.entity.particle.EntityLaserdustFX;
 import net.minecraft.core.entity.EntityLiving;
 import net.minecraft.core.world.World;
 
@@ -20,7 +21,7 @@ public class EntityLaserYellow extends EntityLaser{
 	protected void init() {
 		this.laserBounce = 0;
 		this.laserPierce = 0;
-		this.laserSpread = 3;
+		this.laserSpread = 2;
 		this.laserSpeed = 1.2F;
 		this.laserGravity = 0F;
 		this.laserDamage = 2;
@@ -33,13 +34,13 @@ public class EntityLaserYellow extends EntityLaser{
 		double pOffsetX = this.x - this.xd;
 		double pOffsetY = this.y - this.yd;
 		double pOffsetZ = this.z - this.zd;
-		this.world.spawnParticle("laserdust", pOffsetX, pOffsetY, pOffsetZ, 1, 1, 0);
+		spawnParticle(new EntityLaserdustFX(world, pOffsetX, pOffsetY, pOffsetZ, 0, 0, 0, 1, 1, 0, 0.65F));
 		if (this.ticksInAir == 37) {
 			this.world.playSoundAtEntity(this, "doopmod.laser.hit", 1.0F, 1F / (this.random.nextFloat() * 0.2F + 0.9F));
 			this.remove();
 		}
 		if (this.removed) {
-			createSphericalParticles(0.25, 8, 1, 1, 0);
+			createSphericalParticles(0.25, 8, 1, 1, 0, 0.65F);
 		}
 	}
 }

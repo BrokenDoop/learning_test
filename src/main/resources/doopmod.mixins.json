@@ -6,7 +6,10 @@
   "mixins": [
     "EntityLivingMixin",
     "EntityMixin",
-    "EntityPlayerMixin"
+    "EntityMonsterMixin",
+    "EntityPathfinderAccessor",
+    "EntityPlayerMixin",
+    "EntityWolfMixin"
   ],
   "client": [
   ],
