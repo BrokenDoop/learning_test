@@ -18,11 +18,9 @@ public class EntityMonsterMixin extends EntityLivingMixin implements IEntityHurt
 				if (entity != this) {
 					((EntityPathfinderAccessor) this).setEntityToAttack(entity);
 				}
-				return true;
-			} else {
-				return true;
-			}
-		} else {
+            }
+            return true;
+        } else {
 			return false;
 		}
 	}
