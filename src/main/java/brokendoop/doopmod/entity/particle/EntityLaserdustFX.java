@@ -5,7 +5,7 @@ import net.minecraft.core.entity.fx.EntityFX;
 import net.minecraft.core.world.World;
 
 public class EntityLaserdustFX extends EntityFX {
-	float field_673_a;
+	float field_673_a; //probably 90% pointless
 
 	public EntityLaserdustFX(World world, double x, double y, double z, double red, double green, double blue) {
 		this(world, x, y, z, 0, 0, 0, red, green, blue, 1.0F);

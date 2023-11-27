@@ -20,7 +20,7 @@ public class EntityLaserPink extends EntityLaser{
 		this.laserBounce = 0;
 		this.laserPierce = 0;
 		this.laserSpread = 0;
-		this.laserSpeed = 2.2F;
+		this.laserSpeed = 2.4F;
 		this.laserGravity = 0F;
 		this.laserDamage = 3;
 		this.laserFireDamage = 4;
@@ -30,9 +30,10 @@ public class EntityLaserPink extends EntityLaser{
 		double pOffsetX = this.x - this.xd;
 		double pOffsetY = this.y - this.yd;
 		double pOffsetZ = this.z - this.zd;
-		this.world.spawnParticle("laserdust", pOffsetX, pOffsetY, pOffsetZ, 1, 0.75, 0.75);
+		double greenAndBlue = ((float)Math.random() * 0.2F + 1F) * 0.625;
+		this.world.spawnParticle("laserdust", pOffsetX, pOffsetY, pOffsetZ, 0.95, greenAndBlue, greenAndBlue + 0.05);
 		if (this.removed) {
-			createSphericalParticles(0.25, 8, 1, 0.75, 0.75, 1);
+			createSphericalParticles(0.25, 8, 0.95, greenAndBlue, greenAndBlue + 0.05, 1);
 		}
 	}
 }
