@@ -6,8 +6,6 @@ import net.minecraft.client.render.entity.EntityRenderer;
 import org.lwjgl.opengl.GL11;
 
 public class LaserRenderer extends EntityRenderer<EntityLaser> {
-	private float scale = 0.05625F;
-
 	public LaserRenderer() {
 	}
 
@@ -27,7 +25,6 @@ public class LaserRenderer extends EntityRenderer<EntityLaser> {
 			if (Laser.getLaserType() == 7) {
 				laserType = 7;
 			} else if (Laser.getLaserType() == 6) {
-				this.scale = 0.0365625F;
 				laserType = 6;
 			} else if (Laser.getLaserType() == 5) {
 				laserType = 5;
@@ -51,12 +48,13 @@ public class LaserRenderer extends EntityRenderer<EntityLaser> {
 			GL11.glEnable(32826);
 
 			GL11.glRotatef(45.0F, 1.0F, 0.0F, 0.0F);
-			GL11.glScalef(this.scale, this.scale, this.scale);
+			this.scaleLaser(Laser);
 			GL11.glTranslatef(-4.0F, 0.0F, 0.0F);
+
 
 			for(int i = 0; i < 4; ++i) {
 				GL11.glRotatef(90.0F, 1.0F, 0.0F, 0.0F);
-				GL11.glNormal3f(0.0F, 0.0F, this.scale);
+				GL11.glNormal3f(0.0F, 0.0F, Laser.getLaserScale());
 				tessellator.startDrawingQuads();
 				tessellator.addVertexWithUV(-6.5, -0.6, 0.0, bodyMinU, bodyMinV);
 				tessellator.addVertexWithUV(6.5, -0.6, 0.0, bodyMaxU, bodyMinV);
@@ -69,6 +67,10 @@ public class LaserRenderer extends EntityRenderer<EntityLaser> {
 			GL11.glPopMatrix();
 			GL11.glEnable(GL11.GL_LIGHTING);
 		}
+	}
+	private void scaleLaser(EntityLaser Laser) {
+		float scale = Laser.getLaserScale();
+		GL11.glScalef(scale, scale, scale);
 	}
 
 	public void doRender(EntityLaser entity, double x, double y, double z, float yaw, float renderPartialTicks) {

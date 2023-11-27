@@ -24,8 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EntityLaser extends Entity {
-	//the collision method needs to be fixed, it has a 50/50 chance of actually hitting an entity for some reason.
-	//could also be how I'm calling the method or how I'm getting the entity.
 	protected int xTile;
 	protected int yTile;
 	protected int zTile;
@@ -35,6 +33,7 @@ public class EntityLaser extends Entity {
 	protected HitResult hitResult;
 	public boolean doesLaserBelongToPlayer;
 	public EntityLiving owner;
+	protected float laserScale = 0.05625F;
 	protected int ticksInAir;
 	protected int ticksSoundDelay;
 	protected int isHurtHFTDelay = 0;
@@ -233,6 +232,7 @@ public class EntityLaser extends Entity {
 					}
 				}
 
+
 			} else {
 				this.xTile = hitResult.x;
 				this.yTile = hitResult.y;
@@ -425,12 +425,16 @@ public class EntityLaser extends Entity {
 	public int getLaserType() {
 		return this.laserType;
 	}
+	public float getLaserScale(){
+		return this.laserScale;
+	}
 
 	public void addAdditionalSaveData(CompoundTag tag) {
 		tag.putShort("xTile", (short)this.xTile);
 		tag.putShort("yTile", (short)this.yTile);
 		tag.putShort("zTile", (short)this.zTile);
 		tag.putBoolean("player", this.doesLaserBelongToPlayer);
+		tag.putFloat("laserScale", this.laserScale);
 	}
 
 	public void readAdditionalSaveData(CompoundTag tag) {
@@ -438,6 +442,7 @@ public class EntityLaser extends Entity {
 		this.yTile = tag.getShort("yTile");
 		this.zTile = tag.getShort("zTile");
 		this.doesLaserBelongToPlayer = tag.getBoolean("player");
+		this.laserScale = tag.getFloat("laserScale");
 	}
 
 	public float getShadowHeightOffs() {

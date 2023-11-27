@@ -6,7 +6,7 @@ import net.minecraft.core.entity.EntityLiving;
 import net.minecraft.core.world.World;
 
 public class EntityLaserOrange extends EntityLaser{
-	protected int particleChoice = 0;
+	protected boolean doSmokeParticles = false;
 	public EntityLaserOrange(World world) {
 		super(world, 5);
 	}
@@ -33,7 +33,7 @@ public class EntityLaserOrange extends EntityLaser{
 		Block block = world.getBlock(this.xTile, this.yTile, this.zTile);
 		int meta = this.world.getBlockMetadata(this.xTile, this.yTile, this.zTile);
 		if (block != null && (block.blockMaterial == Material.water || block.blockMaterial == Material.ice || block.blockMaterial == Material.snow || block.blockMaterial == Material.topSnow)) {
-			this.particleChoice = 2;
+			this.doSmokeParticles = true;
 			this.hitSound = "random.fizz";
 			this.hitSoundPitch = 2.6F + (random.nextFloat() - random.nextFloat()) * 0.8F;
 			if (block.id == Block.layerSnow.id) {
@@ -56,10 +56,13 @@ public class EntityLaserOrange extends EntityLaser{
 		double pOffsetX = this.x - this.xd;
 		double pOffsetY = this.y - this.yd;
 		double pOffsetZ = this.z - this.zd;
-		double green = ((float)Math.random() * 0.3F + 0.9F) * 0.45;
+		double green = ((float)Math.random() * 0.2F + 1F) * 0.45;
 		this.world.spawnParticle("laserdust", pOffsetX, pOffsetY, pOffsetZ, 0.9, green, 0);
 		if (this.removed) {
-			createSphericalParticles(0.25, 8, 0.9, green, 0, 1, this.particleChoice);
+			createSphericalParticles(0.25, 8, 0.9, green, 0, 1);
+			if (this.doSmokeParticles) {
+				createSphericalParticles(0.45, 8, 0, 0, 0, 1, 1);
+			}
 		}
 
 		if (hitResult != null) {

@@ -29,6 +29,7 @@ public class EntityLaserYellow extends EntityLaser{
 	}
 
 	public void tick() {
+		this.laserScale = 0.0365625F;
 		this.isHurtHFTDelay = 1;
 		super.tick();
 		double pOffsetX = this.x - this.xd;
