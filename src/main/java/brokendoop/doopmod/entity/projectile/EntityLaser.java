@@ -425,7 +425,7 @@ public class EntityLaser extends Entity {
 	public int getLaserType() {
 		return this.laserType;
 	}
-	public float getLaserScale(){
+	public float getLaserScale(float partialTick){
 		return this.laserScale;
 	}
 

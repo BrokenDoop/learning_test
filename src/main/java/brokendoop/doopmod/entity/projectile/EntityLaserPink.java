@@ -1,5 +1,6 @@
 package brokendoop.doopmod.entity.projectile;
 
+import brokendoop.doopmod.DoopMod;
 import net.minecraft.core.entity.EntityLiving;
 import net.minecraft.core.world.World;
 
@@ -24,14 +25,9 @@ public class EntityLaserPink extends EntityLaser {
 		this.laserFireDamage = 4;
 	}
 	public void tick() {
-		float endScale = 2F;
-		float startScale = 0.0478125F;
-		this.laserScale = startScale;
+
 		double greenAndBlue = ((float)Math.random() * 0.2F + 1F) * 0.625;
 		super.tick();
-		if (this.laserScale < endScale) {
-			this.laserScale = startScale + (endScale - startScale) * ((float) (this.ticksInAir) / 18);
-		}
 		if (this.ticksInAir == 18) {
 			createSphericalParticles(1, 32, 1, 0, 0, 1);
 		}
@@ -43,6 +39,11 @@ public class EntityLaserPink extends EntityLaser {
 		if (this.removed) {
 			createSphericalParticles(0.25, 8, 0.95, greenAndBlue, greenAndBlue + 0.05, 1);
 		}
+	}
+	public float getLaserScale(float partialTick){
+		float startScale = 0.05F;
+		float endScale = 2F;
+		return Math.min(startScale + (endScale - startScale) * ((this.ticksInAir + partialTick) / 18f), endScale);
 	}
 }
 
