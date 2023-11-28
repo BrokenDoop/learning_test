@@ -27,12 +27,6 @@ public class EntityLaserPink extends EntityLaser{
 	}
 
 	public void tick() {
-		float minScale = 0.0478125F;
-		float maxScale = 2F;
-		int ticksToScale = 18;
-		int ticksDelay = 18;
-		this.laserScale = minScale;
-
 		super.tick();
 		if (this.ticksInAir == 160) {
 			createSphericalParticles(1, 32, 1, 0, 0, 2);
