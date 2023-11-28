@@ -35,6 +35,7 @@ public class EntityLaser extends Entity {
 	protected HitResult hitResult;
 	public boolean doesLaserBelongToPlayer;
 	public EntityLiving owner;
+	protected float laserScale = 0.05625F;
 	protected int ticksInAir;
 	protected int ticksSoundDelay;
 	protected int isHurtHFTDelay = 0;
@@ -425,12 +426,16 @@ public class EntityLaser extends Entity {
 	public int getLaserType() {
 		return this.laserType;
 	}
+	public float getLaserScale(float partialTick){
+		return this.laserScale;
+	}
 
 	public void addAdditionalSaveData(CompoundTag tag) {
 		tag.putShort("xTile", (short)this.xTile);
 		tag.putShort("yTile", (short)this.yTile);
 		tag.putShort("zTile", (short)this.zTile);
 		tag.putBoolean("player", this.doesLaserBelongToPlayer);
+		tag.putFloat("laserScale", this.laserScale);
 	}
 
 	public void readAdditionalSaveData(CompoundTag tag) {
@@ -438,6 +443,7 @@ public class EntityLaser extends Entity {
 		this.yTile = tag.getShort("yTile");
 		this.zTile = tag.getShort("zTile");
 		this.doesLaserBelongToPlayer = tag.getBoolean("player");
+		this.laserScale = tag.getFloat("laserScale");
 	}
 
 	public float getShadowHeightOffs() {
