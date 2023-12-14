@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EntityLaser extends Entity {
-	//the collision method needs to be fixed, it has a 50/50 chance of actually hitting an entity for some reason.
 	//could also be how I'm calling the method or how I'm getting the entity.
 	protected int xTile;
 	protected int yTile;
@@ -43,8 +42,8 @@ public class EntityLaser extends Entity {
 	protected float hitSoundPitch = 1F / (this.random.nextFloat() * 0.2F + 0.9F); // <
 	protected boolean collideWithWater = false; // ^^ these 3 variables are used for when the orange laser hits water/ice.
 	protected double laserSpeed;
-	protected float laserBounce;
-	protected float laserPierce;
+	protected int laserBounce;
+	protected int laserPierce;
 	protected int laserSpread;
 	protected float laserGravity;
 	protected int laserDamage;
@@ -162,7 +161,6 @@ public class EntityLaser extends Entity {
 			this.xRotO = this.xRot = (float)Math.toDegrees(Math.atan2(yd, f));
 			this.moveTo(this.x, this.y, this.z, this.yRot, this.xRot);
 		}
-
 	}
 
 	public void tick() {
@@ -400,7 +398,7 @@ public class EntityLaser extends Entity {
 			double pOffsetY = this.y - this.yd * 0.1;
 			double pOffsetZ = this.z - this.zd * 0.1;
 
-			if (particleChoice == 0 || particleChoice == 1 || particleChoice == 2) {
+			if (particleChoice == 0 || particleChoice == 1 || particleChoice == 2) { //this is so I can create a smoke sphere without an entirely new method
 				if (particleChoice == 0 || particleChoice == 2) {
 					spawnParticle(new EntityLaserdustFX(world, pOffsetX, pOffsetY, pOffsetZ, velocityX, velocityY, velocityZ, red, green, blue, scale));
 				}
@@ -435,7 +433,6 @@ public class EntityLaser extends Entity {
 		tag.putShort("yTile", (short)this.yTile);
 		tag.putShort("zTile", (short)this.zTile);
 		tag.putBoolean("player", this.doesLaserBelongToPlayer);
-		tag.putFloat("laserScale", this.laserScale);
 	}
 
 	public void readAdditionalSaveData(CompoundTag tag) {
@@ -443,7 +440,6 @@ public class EntityLaser extends Entity {
 		this.yTile = tag.getShort("yTile");
 		this.zTile = tag.getShort("zTile");
 		this.doesLaserBelongToPlayer = tag.getBoolean("player");
-		this.laserScale = tag.getFloat("laserScale");
 	}
 
 	public float getShadowHeightOffs() {
@@ -594,7 +590,6 @@ public class EntityLaser extends Entity {
 						}
 					}
 				}
-
             }
         }
         return null;

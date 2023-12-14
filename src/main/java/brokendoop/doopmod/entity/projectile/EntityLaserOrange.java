@@ -7,13 +7,9 @@ import net.minecraft.core.world.World;
 
 public class EntityLaserOrange extends EntityLaser{
 	protected boolean doSmokeParticles = false;
-	public EntityLaserOrange(World world) {
-		super(world, 5);
-	}
+	public EntityLaserOrange(World world) { super(world, 5); }
 
-	public EntityLaserOrange(World world, double d, double d1, double d2) {
-		super(world, d, d1, d2, 5);
-	}
+	public EntityLaserOrange(World world, double d, double d1, double d2) { super(world, d, d1, d2, 5); }
 
 	public EntityLaserOrange(World world, EntityLiving entityliving, boolean doesArrowBelongToPlayer) {
 		super(world, entityliving, doesArrowBelongToPlayer, 5);
@@ -56,7 +52,7 @@ public class EntityLaserOrange extends EntityLaser{
 		double pOffsetX = this.x - this.xd;
 		double pOffsetY = this.y - this.yd;
 		double pOffsetZ = this.z - this.zd;
-		double green = ((float)Math.random() * 0.2F + 1F) * 0.45;
+		float green = (float) ((Math.random() * 0.2F + 1F) * 0.45);
 		this.world.spawnParticle("laserdust", pOffsetX, pOffsetY, pOffsetZ, 0.9, green, 0);
 		if (this.removed) {
 			createSphericalParticles(0.25, 8, 0.9, green, 0, 1);
