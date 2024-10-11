@@ -1,5 +1,6 @@
 package brokendoop.doopmod;
 
+import brokendoop.doopmod.core.DoopModEntities;
 import net.fabricmc.api.ModInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +20,7 @@ public class DoopMod implements ModInitializer, GameStartEntrypoint, RecipeEntry
 
 	@Override
 	public void beforeGameStart() {
-
+		DoopModEntities.initEntities();
 	}
 
 	@Override
