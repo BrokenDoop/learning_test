@@ -4,12 +4,6 @@
   "package": "brokendoop.doopmod.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "EntityLivingMixin",
-    "EntityMixin",
-    "EntityMonsterMixin",
-    "EntityPathfinderAccessor",
-    "EntityPlayerMixin",
-    "EntityWolfMixin"
   ],
   "client": [
   ],

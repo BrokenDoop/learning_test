@@ -6,21 +6,31 @@
   "name": "Doops Mod",
   "description": "I am Learning I am a GOD.",
   "authors": [
-    "Doop/Levi"
+    "Levi 'Doop' (BrokenDoop)"
   ],
   "contact": {
     "homepage": "",
     "sources": ""
   },
 
+	"icon": "icon.png",
   "license": "CC0-1.0",
 
   "environment": "*",
   "entrypoints": {
     "main": [
 			"brokendoop.doopmod.DoopMod"
-    ]
-  },
+    ],
+		"beforeGameStart": [
+			"brokendoop.doopmod.DoopMod"
+		],
+		"afterGameStart": [
+			"brokendoop.doopmod.DoopMod"
+		],
+		"recipesReady": [
+			"brokendoop.doopmod.DoopMod"
+		]
+	},
   "mixins": [
 		"doopmod.mixins.json"
   ],

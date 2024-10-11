@@ -1,42 +1,39 @@
 package brokendoop.doopmod;
 
-import brokendoop.doopmod.crafting.ModCraftingManager;
-import brokendoop.doopmod.entity.ModEntities;
-import brokendoop.doopmod.item.ModItems;
-import brokendoop.doopmod.block.ModBlocks;
 import net.fabricmc.api.ModInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import turniplabs.halplibe.util.ConfigHandler;
+import turniplabs.halplibe.util.GameStartEntrypoint;
+import turniplabs.halplibe.util.RecipeEntrypoint;
 
-import java.util.Properties;
 
-
-public class DoopMod implements ModInitializer {
+public class DoopMod implements ModInitializer, GameStartEntrypoint, RecipeEntrypoint {
     public static final String MOD_ID = "doopmod";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
-	private void handleConfig() {
-		Properties prop = new Properties();
-		prop.setProperty("starting_block_id","3100");
-		prop.setProperty("starting_item_id","21100");
-		ConfigHandler config = new ConfigHandler(MOD_ID,prop);
-		UtilIdRegistrar.initIds(
-			config.getInt("starting_block_id"),
-			config.getInt("starting_item_id")
-		);
-		config.updateConfig();
-	}
 
     @Override
     public void onInitialize() {
         LOGGER.info("DoopMod initialized.");
-		handleConfig();
-
-		ModItems.register();
-		ModEntities.register();
-		ModSounds.register();
-		ModBlocks.register();
-		ModCraftingManager.register();
     }
+
+	@Override
+	public void beforeGameStart() {
+
+	}
+
+	@Override
+	public void afterGameStart() {
+
+	}
+
+	@Override
+	public void onRecipesReady() {
+
+	}
+
+	@Override
+	public void initNamespaces() {
+
+	}
 }
