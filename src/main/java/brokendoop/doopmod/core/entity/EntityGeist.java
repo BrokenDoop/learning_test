@@ -3,6 +3,7 @@ package brokendoop.doopmod.core.entity;
 import com.mojang.nbt.CompoundTag;
 import net.minecraft.core.HitResult;
 import net.minecraft.core.block.Block;
+import net.minecraft.core.block.BlockTransparent;
 import net.minecraft.core.entity.Entity;
 import net.minecraft.core.entity.monster.EntityMonster;
 import net.minecraft.core.entity.player.EntityPlayer;
@@ -14,7 +15,7 @@ import net.minecraft.core.world.World;
 
 public class EntityGeist extends EntityMonster {
 
-	protected float prevMoveSpeed;
+	protected float initialMoveSpeed;
 	public float prevLimbDrag;
 	public float limbDrag;
 	public float setLimbDrag;
@@ -36,7 +37,7 @@ public class EntityGeist extends EntityMonster {
 	public EntityGeist(World world) {
 		super(world);
 		this.moveSpeed = 0.5F;
-		this.prevMoveSpeed = this.moveSpeed;
+		this.initialMoveSpeed = this.moveSpeed;
 		this.attackStrength = 5;
 
 	}
@@ -107,69 +108,50 @@ public class EntityGeist extends EntityMonster {
 
 	}
 
+	public void baseTick () {
+		super.baseTick();
+		if (this.angerBuffer > 0) {
+			--this.angerBuffer;
+		}
+		if (this.seenBuffer > 0) {
+			--this.seenBuffer;
+		}
+	}
 	protected void updatePlayerActionState() {
 		super.updatePlayerActionState();
-		this.angerBuffer--;
-		this.seenBuffer--;
+		// It tries to check if the nearest player looking at it is looking at it, otherwise it would only try to check the nearest player and ignore if a further player is looking at it.
+		// It does this so anyone who is looking at it can put it in the shy state as long as it has aggro on somebody, without needing to check every player.
 		boolean isSeen = this.isSeenByPlayer(getClosestPlayerToEntityLooking());
 
-
-		//basic implementation - going to redo it for readability (and hopefully fix a bug when the Geist gets out of distance/'the world is reloaded' and doesn't reset it's state)
-		// if there is a target and its within the "sight radius" (16)
-		if (this.entityToAttack != null) {
-			if (isSeen && !(this.angerBuffer >= 0) || this.seenBuffer >= 0) { // set shy
+		//handle state switch and behaviour
+		if(this.entityToAttack != null && this.distanceTo(this.entityToAttack) < 16) {
+			if (isSeen && !(this.angerBuffer > 0) || this.seenBuffer > 0) { //shy
 				this.setGeistAngry(false);
 				this.setGeistShy(true);
-
-				if (this.entityToAttack.distanceTo(this) < 12 && !this.isGeistTooClose()) { // if geist is within a range it will stop moving, too close and it moves backwards.
-					this.moveSpeed = incrementMoveSpeed(0, 0.1F); // scale speed to 0
-				} else if (this.isGeistTooClose()){
-					this.moveSpeed = incrementMoveSpeed(-this.prevMoveSpeed * 0.25F, 0.1F);
-				} else {// set move speed when out of radius
-					this.moveSpeed = incrementMoveSpeed(this.prevMoveSpeed, 0.05F);
-				}
-
-
-
-
-
 				if (isSeen) {
 					this.seenBuffer = 10; //set the buffer, so it stays "shy" for a moment after looking away
 				}
-
-			} else { // set angry
-				this.setGeistShy(false);
+				this.moveSpeed = 0;
+				if (this.isGeistTooClose()) { //too close and shy
+					this.moveSpeed = -0.1F;
+				}
+			} else { // angry
 				this.setGeistAngry(true);
-
-				if (!this.isGeistTooClose() || this.angerBuffer >= 0) { // increase chase speed if geist is far or hit
-					this.moveSpeed = incrementMoveSpeed(this.prevMoveSpeed * 2.2F, 0.05F); // scale speed to 2.2x
-
-				} else { // scale move speed to 2.2X when geist is close.
-					this.moveSpeed = incrementMoveSpeed(this.prevMoveSpeed * 2.0F, 0.05F); //move speed is capped or something, need to fix.
-
+				this.setGeistShy(false);
+				this.moveSpeed = this.initialMoveSpeed * 2.6F;
+				if (this.isGeistTooClose()) { //too close and angry
+				this.moveSpeed = this.initialMoveSpeed * 2.2F;
 				}
 			}
-		} else { // set back to no-target (unaware)
-			this.setGeistShy(false);
+		} else {
+			if (this.entityToAttack != null) {
+				this.pathToEntity = null;
+			}
+			this.moveSpeed = this.initialMoveSpeed;
 			this.setGeistAngry(false);
-			this.moveSpeed = incrementMoveSpeed(this.prevMoveSpeed, 0.05F);
+			this.setGeistShy(false);
 		}
 
-	}
-
-	public float incrementMoveSpeed(float targetMoveSpeed, float adjustmentPerTick) {
-		if (this.moveSpeed < targetMoveSpeed) {
-			this.moveSpeed += adjustmentPerTick;
-			if (this.moveSpeed > targetMoveSpeed) {
-				this.moveSpeed = targetMoveSpeed;
-			}
-		} else if (this.moveSpeed > targetMoveSpeed) {
-			this.moveSpeed -= adjustmentPerTick;
-			if (this.moveSpeed < targetMoveSpeed) {
-				this.moveSpeed = targetMoveSpeed;
-			}
-		}
-	return this.moveSpeed;
 	}
 
 
@@ -222,7 +204,7 @@ public class EntityGeist extends EntityMonster {
 
 	public boolean isGeistTooClose() {
 		if (this.entityToAttack != null) {
-			return this.entityToAttack.distanceTo(this) < 4;
+			return this.entityToAttack.distanceTo(this) < 5;
 		} else
 			return false;
 	}
@@ -242,7 +224,7 @@ public class EntityGeist extends EntityMonster {
 			HitResult hitResult = this.world.checkBlockCollisionBetweenPoints(playerPos, thisPos, false, true);
 
 			if (hitResult == null) {
-				return dotProduct > 0.85D - (0.005D * distance) && player.canEntityBeSeen(this);
+				return dotProduct > 0.85D - (0.005D * distance);
 			} else
 				return false;
 		}

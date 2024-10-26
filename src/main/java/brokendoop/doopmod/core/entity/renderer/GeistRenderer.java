@@ -12,7 +12,6 @@ public class GeistRenderer extends LivingRenderer<EntityGeist> {
 		ModelGeist modelGeist = (ModelGeist) mainModel;
 		modelGeist.setLivingAnimations(entityGeist, entityGeist.limbSwing, entityGeist.limbYaw, partialTick);
 
-
 		entityGeist.rightArm.rotationCurrentX = interpolateRotateAngle(entityGeist.rightArm.rotationCurrentX, entityGeist.rightArm.rotationTargetX, partialTick);
 		entityGeist.rightArm.rotationCurrentY = interpolateRotateAngle(entityGeist.rightArm.rotationCurrentY, entityGeist.rightArm.rotationTargetY, partialTick);
 		entityGeist.rightArm.rotationCurrentZ = interpolateRotateAngle(entityGeist.rightArm.rotationCurrentZ, entityGeist.rightArm.rotationTargetZ, partialTick);

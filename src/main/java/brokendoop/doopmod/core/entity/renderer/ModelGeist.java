@@ -81,22 +81,23 @@ public class ModelGeist extends ModelBiped {
 
 
 		if (this.entityGeist.isGeistShy()) {
-			this.entityGeist.rightLeg.rotationTargetX = -(float) Math.PI / 4;
-			this.entityGeist.rightLeg.rotationTargetY = (float) Math.PI / 14;
-			this.entityGeist.leftLeg.rotationTargetX = -(float) Math.PI / 4;
-			this.entityGeist.leftLeg.rotationTargetY  = -(float) Math.PI / 14;
-			//arm rotations are handled in setRotationAngles when covering the face to make them instant. This is here so it can interpolate from the pos
-			this.entityGeist.rightArm.rotationCurrentX = -(float) Math.PI + ((float) Math.PI / 3) - (this.bipedHead.rotateAngleY / 3.75F);
+			this.entityGeist.rightLeg.rotationTargetX = -(float) Math.PI / 5;
+			this.entityGeist.rightLeg.rotationTargetY = (float) Math.PI / 24;
+			this.entityGeist.leftLeg.rotationTargetX = -(float) Math.PI / 5;
+			this.entityGeist.leftLeg.rotationTargetY  = -(float) Math.PI / 24;
+			//arm rotations are handled in setRotationAngles when covering the face as well to make them instant. This is here so it can interpolate from the pos
+			this.entityGeist.rightArm.rotationCurrentX = -(float) Math.PI + ((float) Math.PI / 3) - (this.bipedHead.rotateAngleY / 3.7F);
 			this.entityGeist.rightArm.rotationCurrentY = this.bipedHead.rotateAngleY / 2 - ((float) Math.PI / 8);
-			this.entityGeist.leftArm.rotationCurrentX = -(float) Math.PI + ((float) Math.PI / 3) + (this.bipedHead.rotateAngleY / 3.75F);
+			this.entityGeist.leftArm.rotationCurrentX = -(float) Math.PI + ((float) Math.PI / 3) + (this.bipedHead.rotateAngleY / 3.7F);
 			this.entityGeist.leftArm.rotationCurrentY = this.bipedHead.rotateAngleY / 2 + ((float) Math.PI / 8);
 			armOscillationX = 0;
 			armOscillationZ = 0;
 			if (this.entityGeist.isGeistTooClose()) {
+				//leg rotation towards facing direction is bugged, no idea what's going on with that.
 				this.entityGeist.rightLeg.rotationTargetX = -(float) Math.PI / 3;
-				this.entityGeist.rightLeg.rotationTargetY = this.bipedHead.rotateAngleY / 2 + (float) Math.PI / 14;
+				this.entityGeist.rightLeg.rotationTargetY = (float) Math.PI / 14;
 				this.entityGeist.leftLeg.rotationTargetX = -(float) Math.PI / 3;
-				this.entityGeist.leftLeg.rotationTargetY = this.bipedHead.rotateAngleY / 2 - (float) Math.PI / 14;
+				this.entityGeist.leftLeg.rotationTargetY = -(float) Math.PI / 14;
 				legOscillationX = MathHelper.cos(limbPitch * 0.37F + 0.5F) * 0.3F;
 				legOscillationZ = MathHelper.sin(limbPitch * 0.37F + 0.5F) * 0.06F;
 			}
@@ -133,8 +134,8 @@ public class ModelGeist extends ModelBiped {
 
 	public void setRotationAngles(float limbSwing, float limbYaw, float limbPitch, float headYaw, float headPitch, float scale) {
 		this.limbPitch = limbPitch;
-		this.bipedHead.rotateAngleY = headYaw * (float) Math.PI / 180F;
-		this.bipedHead.rotateAngleX = headPitch * (float) Math.PI / 180F;
+		this.bipedHead.rotateAngleY = headYaw / 57.29578F;
+		this.bipedHead.rotateAngleX = headPitch / 57.29578F;
 		this.bipedHeadOverlay.rotateAngleY = this.bipedHead.rotateAngleY;
 		this.bipedHeadOverlay.rotateAngleX = this.bipedHead.rotateAngleX;
 
@@ -146,9 +147,9 @@ public class ModelGeist extends ModelBiped {
 		if (this.entityGeist.isGeistShy()){
 			this.bipedHead.rotateAngleY /= 1.25F;
 			this.bipedHead.rotateAngleX = (float) Math.PI / 12;
-			this.bipedRightArm.rotateAngleX = -(float) Math.PI + ((float) Math.PI / 3) - (this.bipedHead.rotateAngleY / 3.75F);
+			this.bipedRightArm.rotateAngleX = -(float) Math.PI + ((float) Math.PI / 3) - (this.bipedHead.rotateAngleY / 3.7F);
 			this.bipedRightArm.rotateAngleY = this.bipedHead.rotateAngleY / 2 - ((float) Math.PI / 8);
-			this.bipedLeftArm.rotateAngleX = -(float) Math.PI + ((float) Math.PI / 3) + (this.bipedHead.rotateAngleY / 3.75F);
+			this.bipedLeftArm.rotateAngleX = -(float) Math.PI + ((float) Math.PI / 3) + (this.bipedHead.rotateAngleY / 3.7F);
 			this.bipedLeftArm.rotateAngleY = this.bipedHead.rotateAngleY / 2 + ((float) Math.PI / 8);
 		}
 
