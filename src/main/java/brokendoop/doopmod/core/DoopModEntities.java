@@ -1,7 +1,7 @@
 package brokendoop.doopmod.core;
 
 import brokendoop.doopmod.DoopModConfig;
-import brokendoop.doopmod.core.entity.GeistEntity;
+import brokendoop.doopmod.core.entity.EntityGeist;
 import brokendoop.doopmod.core.entity.renderer.*;
 import turniplabs.halplibe.helper.EntityHelper;
 
@@ -12,6 +12,6 @@ public class DoopModEntities {
 	}
 
 	public static void initEntities() {
-		EntityHelper.createEntity(GeistEntity.class, nextID(), "Geist", GeistRenderer::new);
+		EntityHelper.createEntity(EntityGeist.class, nextID(), "Geist", GeistRenderer::new);
 	}
 }
