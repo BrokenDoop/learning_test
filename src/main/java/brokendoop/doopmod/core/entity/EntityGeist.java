@@ -54,19 +54,19 @@ public class EntityGeist extends EntityMonster {
 		return false;
 	}
 
-	public String getEntityTexture() { //skin variants don't work rn, fix that shit later
+	public String getEntityTexture() { //skin variants don't work rn, probably fix it in 7.3
 		if (this.isGeistAngry()) {
-			return this.isGeistAngry() ? "/assets/doopmod/textures/entity/geist_angry/" + this.getSkinVariant() + ".png" : super.getEntityTexture();
+			return "/assets/doopmod/textures/entity/geist_angry/" + this.getSkinVariant() + ".png";
 		} else if (this.isGeistShy()) {
-			return this.isGeistShy() ? "/assets/doopmod/textures/entity/geist_shy/" + this.getSkinVariant() + ".png" : super.getEntityTexture();
+			return "/assets/doopmod/textures/entity/geist_shy/" + this.getSkinVariant() + ".png";
 		} else
 			return "/assets/doopmod/textures/entity/geist/" + this.getSkinVariant() + ".png";
 	}
 	public String getDefaultEntityTexture() {
 		if (this.isGeistAngry()) {
-			return this.isGeistAngry() ? "/assets/doopmod/textures/entity/geist_angry/0.png" : super.getEntityTexture();
+			return "/assets/doopmod/textures/entity/geist_angry/0.png";
 		} else if (this.isGeistShy()) {
-			return this.isGeistShy() ? "/assets/doopmod/textures/entity/geist_shy/0.png" : super.getEntityTexture();
+			return "/assets/doopmod/textures/entity/geist_shy/0.png";
 		} else
 			return "/assets/doopmod/textures/entity/geist/0.png";
 	}
