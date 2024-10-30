@@ -257,6 +257,9 @@ public class EntityGeist extends EntityMonster {
 			this.entityData.set(16, (byte)(byte0 & -3));
 		}
 	}
+	protected String getDeathSound() {
+		return "doopmod.geist.death";
+	}
 
 
 
