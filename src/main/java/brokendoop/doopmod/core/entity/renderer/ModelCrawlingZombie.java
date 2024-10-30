@@ -1,10 +1,13 @@
 package brokendoop.doopmod.core.entity.renderer;
 
+import brokendoop.doopmod.core.entity.EntityCrawlingZombie;
 import net.minecraft.client.render.model.Cube;
 import net.minecraft.client.render.model.ModelZombie;
+import net.minecraft.core.entity.EntityLiving;
 import net.minecraft.core.util.helper.MathHelper;
 
 public class ModelCrawlingZombie extends ModelZombie {
+	public EntityCrawlingZombie crawlingZombie;
 	public ModelCrawlingZombie() {
 		this.parts();
 	}
@@ -26,12 +29,18 @@ public class ModelCrawlingZombie extends ModelZombie {
 		this.bipedLeftArm.addBox(-1.0F, -2.0F, -2.0F, 4, 12, 4);
 		this.bipedLeftArm.setRotationPoint(5.0F, 22.0F, 0.0F);
 	}
+	public void setLivingAnimations(EntityLiving entityliving, float limbSwing, float limbYaw, float partialTick) {
+		this.crawlingZombie = (EntityCrawlingZombie) entityliving;
+
+	}
+
 	public void setRotationAngles(float limbSwing, float limbYaw, float limbPitch, float headYaw, float headPitch, float scale) {
 		super.setRotationAngles(limbSwing, limbYaw, limbPitch, headYaw, headPitch, scale);
-		this.bipedHead.rotationPointY = 22.0F;
 		this.bipedBody.rotateAngleX = (float) Math.PI / 2;
+		this.bipedHead.rotationPointY = 22.0F;
 		this.bipedRightArm.rotateAngleX = -(float) Math.PI / 2 + MathHelper.cos(limbSwing * 0.6662F + 3.141593F) * 2.0F * limbYaw * 0.2F;
 		this.bipedLeftArm.rotateAngleX = -(float) Math.PI / 2 + MathHelper.cos(limbSwing * 0.6662F) * 2.0F * limbYaw * 0.2F;
+		this.bipedBody.rotateAngleY =  MathHelper.cos(limbSwing * 0.6662F) * 2.0F * limbYaw * 0.11F;
 		this.bipedRightArm.rotateAngleY = (float) Math.PI / 20;
 		this.bipedLeftArm.rotateAngleY = -(float) Math.PI / 20;
 
